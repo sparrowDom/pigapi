@@ -1,0 +1,132 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+
+framework:
+    #esi:             ~
+    #translator:      { fallback: %locale% }
+    secret:          %secret%
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: %kernel.debug%
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_proxies: ~
+    session:         ~
+    fragments:       ~
+
+# twig Configuration
+twig:
+    debug:            %kernel.debug%
+    strict_variables: %kernel.debug%
+    exception_controller: 'FOS\RestBundle\Controller\ExceptionController::showAction'
+
+# Assetic Configuration
+assetic:
+    debug:          %kernel.debug%
+    use_controller: false
+    bundles:        [ ]
+    #java: /usr/bin/java
+    filters:
+        cssrewrite: ~
+        #closure:
+        #    jar: %kernel.root_dir%/Resources/java/compiler.jar
+        #yui_css:
+        #    jar: %kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   %database_name%
+        user:     %database_user%
+        password: %database_password%
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver, add the path in parameters.yml
+        # e.g. database_path: %kernel.root_dir%/data/data.db3
+        # path:     %database_path%
+        types:
+            point: Mimazoo\SoaBundle\Type\PointType
+        mapping_types:
+            point: point
+            enum: string
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+
+
+# stof_doctrine_extensions Configuration
+stof_doctrine_extensions:
+    default_locale: en_US
+    orm:
+        default:
+            sluggable: true
+            timestampable: true
+            tree: true
+            sortable: true
+            
+# Swiftmailer Configuration
+swiftmailer:
+    transport: %mailer_transport%
+    host:      %mailer_host%
+    username:  %mailer_user%
+    password:  %mailer_password%
+    spool:     { type: memory }
+    
+# sensio_framework_extra Configuration
+sensio_framework_extra:
+    view:    { annotations: false }
+    
+# fos_rest Configuration
+fos_rest:
+    service:
+        view_handler: mimazoo_soa.view_handler 
+    body_listener: true
+    param_fetcher_listener: force
+    allowed_methods_listener: true
+    format_listener:
+        default_priorities: [json]
+        fallback_format: json
+        prefer_extension: false
+    view:
+        view_response_listener: force
+        force_redirects:
+            html: false
+            json: false
+            xml: false
+        formats:
+            json: true
+            xml: true
+            html: false
+            rss: false
+        templating_formats:
+            html: false
+        mime_types:
+            jpg: 'image/jpeg'
+            png: 'image/png'
+    exception:
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': HTTP_NOT_FOUND
+    routing_loader:
+        default_format: json
+        
+# knp_paginator Configuration    
+knp_paginator:
+    page_range: 5                      # default page range used in pagination control
+    default_options:
+        page_name: page                 # page query parameter name
+        sort_field_name: sortBy         # sort field query parameter name
+        sort_direction_name: sortOrder  # sort direction query parameter name
+        distinct: true                  # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template

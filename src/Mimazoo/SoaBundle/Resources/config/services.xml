@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="mimazoo_soa.hal_view_handler.class">Mimazoo\SoaBundle\View\HalViewHandler</parameter>
+    </parameters>
+
+    <services>
+        <service id="mimazoo_soa.hal_handler" class="%mimazoo_soa.hal_view_handler.class%" />
+    	<service id="mimazoo_soa.view_handler" parent="fos_rest.view_handler.default" >
+    		<call method="registerHandler">
+           		<argument type="string">json</argument>
+           		<argument type="collection">
+           			<argument type="service" id="mimazoo_soa.hal_handler" />
+           			<argument type="string">createResponse</argument>
+           		</argument>
+        	</call>
+        	<call method="registerHandler">
+           		<argument type="string">xml</argument>
+           		<argument type="collection">
+           			<argument type="service" id="mimazoo_soa.hal_handler" />
+           			<argument type="string">createResponse</argument>
+           		</argument>
+        	</call>
+    	</service>
+    	
+    	<service id="mimazoo_soa.type.boolean" class="Mimazoo\SoaBundle\Form\Type\BooleanType">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <tag name="form.type" alias="boolean" />
+        </service>
+        
+    	<service id="mimazoo_soa.type.point" class="Mimazoo\SoaBundle\Form\Type\PointType">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <tag name="form.type" alias="point" />
+        </service>
+        
+        <service id="mimazoo_soa.type.custom_collection" class="Mimazoo\SoaBundle\Form\Type\CustomCollectionType">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="service_container" />
+            <tag name="form.type" alias="custom_collection" />
+        </service>
+        
+        <service id="mimazoo_soa.data_transformer.point_to_array" class="Mimazoo\SoaBundle\Form\DataTransformer\PointToArrayTransformer" public="false">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+        </service>        
+        
+        <service id="mimazoo_soa.serializer.point_handler" class="Mimazoo\SoaBundle\Serializer\PointHandler">
+        	<argument type="service" id="mimazoo_soa.data_transformer.point_to_array" />
+    		<tag name="jms_serializer.subscribing_handler" type="Point" format="json" method="serializePointToArray" />
+		</service>
+		
+		<service id="mimazoo_soa.serializer.event_listener" class="Mimazoo\SoaBundle\Serializer\InnerLinksSubscriber">
+			<argument type="service" id="service_container" />
+    		<tag name="jms_serializer.event_subscriber"/>
+		</service>
+		
+        <service id="mimazoo_soa.request.param_fetcher" class="%fos_rest.request.param_fetcher.class%" scope="prototype">
+            <argument type="service" id="fos_rest.request.param_fetcher.reader"/>
+            <argument type="service" id="request"/>
+        </service>
+        
+    </services>
+
+</container>

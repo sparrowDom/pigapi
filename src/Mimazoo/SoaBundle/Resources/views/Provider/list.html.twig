@@ -1,0 +1,7 @@
+<ul>
+{% for provider in providers %}
+	<li>{{ dump(provider) }}</li>
+{% else %}
+	<li>No providers found</li>
+{% endfor %}
+</ul>

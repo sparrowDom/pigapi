@@ -1,0 +1,3 @@
+player:
+    type:     rest
+    resource: Mimazoo\SoaBundle\Controller\PlayerController
