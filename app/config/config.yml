@@ -85,6 +85,14 @@ swiftmailer:
 # sensio_framework_extra Configuration
 sensio_framework_extra:
     view:    { annotations: false }
+  
+
+fos_facebook:
+  alias:  facebook
+  app_id: 366037950184714
+  secret: c90dcbf2848e3627d2cdd0e6c781c334
+  cookie: true
+  #permissions: [email, user_birthday, user_location]
     
 # fos_rest Configuration
 fos_rest:

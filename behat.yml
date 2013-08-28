@@ -1,10 +1,11 @@
 default:
     context:
         parameters:
-            base_url: http://api.wolfandswine.loc/app_test.php
+            base_url: http://api.dev.wolfandswine.com/app_test.php
     extensions:
         Behat\Symfony2Extension\Extension:
             bundle: MimazooSoaBundle
         VIPSoft\DoctrineDataFixturesExtension\Extension:
+            lifetime: scenario
             fixtures:
               - Mimazoo\SoaBundle\DataFixtures\ORM\PlayerFixture

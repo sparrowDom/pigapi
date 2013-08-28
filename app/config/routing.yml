@@ -1,3 +1,11 @@
 mimazoo_soa:
     type:     rest
     resource: "@MimazooSoaBundle/Resources/config/routing.yml"
+
+player_login:
+    path:      /players/login
+    defaults:  { _controller: MimazooSoaBundle:Player:login }
+
+player_me:
+    path:      /players/me
+    defaults:  { _controller: MimazooSoaBundle:Player:login }

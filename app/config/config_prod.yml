@@ -10,7 +10,10 @@ framework:
         strict_requirements: null
     #validation:
     #    cache: apc
-
+    
+parameters:
+    database_name:     pigdb_test
+    
 #doctrine:
 #    orm:
 #        metadata_cache_driver: apc
@@ -27,3 +30,4 @@ monolog:
             type:  stream
             path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
+            

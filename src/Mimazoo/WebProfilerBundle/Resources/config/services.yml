@@ -1,0 +1,7 @@
+parameters:
+#    mimazoo_web_profiler.example.class: Mimazoo\WebProfilerBundle\Example
+
+services:
+#    mimazoo_web_profiler.example:
+#        class: %mimazoo_web_profiler.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

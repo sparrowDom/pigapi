@@ -26,6 +26,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     private $_client            = null;
     private $_response          = null;
     private $_requestUrl        = null;
+    private $_queryParameters = array();
 
     private $_parameters			= array();
 
@@ -41,6 +42,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
 
         $this->_restObject  = new \stdClass();
         $this->_client      = new \Guzzle\Service\Client();
+        $this->_queryParameters = array();
         
         //do not return exceptions on 4xx and 5xx responses guzzle fix
         $this->_client->getEventDispatcher()->addListener(
@@ -196,7 +198,15 @@ class RestContext extends BehatContext implements KernelAwareInterface
     		throw new \Exception('No item found');
     	}
     }
-    
+
+    /**
+     * @Given /^that query parameter\'s "([^"]*)" value is "([^"]*)"$/
+     */
+    public function thatQueryParameterSValueIs($parameterName, $value)
+    {
+        $this->_queryParameters[$parameterName] = $value;
+    }
+
     /**
      * @When /^I request "([^"]*)"$/
      */
@@ -205,43 +215,56 @@ class RestContext extends BehatContext implements KernelAwareInterface
         $baseUrl 			= $this->getParameter('base_url');
         $this->_requestUrl 	= $baseUrl.$pageUrl;
 
+        $first = true;
+        foreach($this->_queryParameters as $name => $value){
+            $this->_requestUrl .= ($first ? '?' : '&') . $name .'='.$value;
+            $first = false;
+        }
+
         //every request should include oauth token
-        $oauth = $this->getOauthHeader();
-        
+        //$oauth = $this->getOauthHeader();
+
+        //TODO handle that you set a token here
         switch (strtoupper($this->_restObjectMethod)) {
             case 'GET':
                 $response = $this->_client
-                    ->get($this->_requestUrl.'?'.http_build_str((array)$this->_restObject), $oauth)
+                    ->get($this->_requestUrl)
                     ->send();
                 break;
             case 'POST':
-            
             	$postFields = (array)$this->_restObject;
                 $response = $this->_client
-                    ->post($this->_requestUrl,$oauth,$postFields)
+                    //->post($this->_requestUrl,$oauth,$postFields)
+                    ->post($this->_requestUrl,null,$postFields)
+                    ->setHeader("Content-Type", "application/json")
                     ->send();
                 
                 break;
             case 'PUT':
                 $body = json_encode((array)$this->_restObject);
                 $response = $this->_client
-                	->put($this->_requestUrl,$oauth,$body)
+                	//->put($this->_requestUrl,$oauth,$body)
+                    ->put($this->_requestUrl,null,$body)
+                    ->setHeader("Content-Type", "application/json")
                 	->send();
                 break;
             case 'PATCH':
                $body = json_encode((array)$this->_restObject);
                 $response = $this->_client
-                	->patch($this->_requestUrl,$oauth,$body)
+                	//->patch($this->_requestUrl,$oauth,$body)
+                    ->patch($this->_requestUrl,null,$body)
+                    ->setHeader("Content-Type", "application/json")
                 	->send();
                 break;
             case 'DELETE':
             	$response = $this->_client
-            		->delete($this->_requestUrl.'?'.http_build_str((array)$this->_restObject), $oauth)
+            		//->delete($this->_requestUrl.'?'.http_build_str((array)$this->_restObject), $oauth)
+                    ->delete($this->_requestUrl.'?'.http_build_str((array)$this->_restObject), null)
             		->send();
             	break;
             	
         }
-        
+
         $this->_response = $response;
     }
 
@@ -254,6 +277,74 @@ class RestContext extends BehatContext implements KernelAwareInterface
 
         if (empty($data)) {
             throw new \Exception("Response was not JSON\n" . $this->_response);
+        }
+    }
+
+
+    /**
+     * @Then /^the response data has an array property "([^"]*)" of length "([^"]*)"$/
+     */
+    public function theResponseDataHasAnArrayPropertyOfLength($propertyName, $arrayLength)
+    {
+        $data = json_decode($this->_response->getBody(true));
+
+        if (!empty($data)) {
+            $data = $data->data[0];
+            if (!empty($data)) {
+                if (!isset($data->$propertyName)) {
+                    throw new \Exception("Property '".$propertyName."' is not set!\n");
+                }
+                if(!is_array($data->$propertyName)){
+                    throw new \Exception("Property '".$propertyName."' is not an array!\n");
+                }
+
+                if(intval($data->$propertyName) !== intval($arrayLength)){
+                    throw new \Exception("Array '".$propertyName."' is of length " . intval($arrayLength) . " expected: " . $arrayLength . "!\n");
+                }
+            } else {
+                throw new \Exception("Response data was empty\n" . $data);
+            }
+        } else {
+            throw new \Exception("Response was not JSON\n" . $this->_response->getBody(true));
+        }
+    }
+
+
+    /**
+     * @Then /^the response data has a "([^"]*)" property$/
+     */
+    public function theResponseDataHasAProperty($propertyName)
+    {
+        $data = json_decode($this->_response->getBody(true));
+
+        if (!empty($data)) {
+            $data = $data->data[0];
+            if (!empty($data)) {
+                if (!isset($data->$propertyName)) {
+                    throw new \Exception("Property '".$propertyName."' is not set!\n");
+                }
+            } else {
+                throw new \Exception("Response data was empty\n" . $data);
+            }
+        } else {
+            throw new \Exception("Response was not JSON\n" . $this->_response->getBody(true));
+        }
+    }
+
+    /**
+     * @Then /^store the response "([^"]*)" property as new token$/
+     */
+    public function storeTheResponseProperty($propertyName)
+    {
+        $data = json_decode($this->_response->getBody(true));
+
+        if (!empty($data)) {
+            if (!isset($data->$propertyName)) {
+                throw new \Exception("Property '".$propertyName."' is not set!\n");
+            }
+            $this->_queryParameters['token'] = $data->$propertyName;
+        } else {
+            throw new \Exception("Response was not JSON\n" . $this->_response->getBody(true));
         }
     }
 
@@ -296,6 +387,35 @@ class RestContext extends BehatContext implements KernelAwareInterface
     }
 
     /**
+     * @Then /^the "([^"]*)" data property equals "([^"]*)" of type "([^"]*)"$/
+     */
+    public function theDataPropertyEquals($propertyName, $propertyValue, $type)
+    {
+
+        settype($propertyValue, $type);
+
+        $data = json_decode($this->_response->getBody(true));
+
+        if (empty($data)) {
+            throw new Exception("Response was not JSON\n" . $this->_response->getBody(true));
+        }
+
+        $data = $data->data[0];
+
+        if (empty($data)) {
+            throw new Exception("Response data was empty!\n");
+        }
+
+        if (!isset($data->$propertyName)) {
+            throw new \Exception("Property '".$propertyName."' is not set!\n");
+        }
+        if ($data->$propertyName !== $propertyValue) {
+            throw new \Exception('Property value mismatch! (given: '.$propertyValue.', match: '.$data->$propertyName.')');
+        }
+
+    }
+
+    /**
      * @Given /^the type of the "([^"]*)" property is ([^"]*)$/
      */
     public function theTypeOfThePropertyIsNumeric($propertyName,$typeString)
@@ -327,7 +447,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     {
     	
         if ((string)$this->_response->getStatusCode() !== $httpStatus) {
-        	print_r($this->_response->getBody(true));die();
+        	//print_r($this->_response->getBody(true));die();
         	throw new \Exception('HTTP code does not match '.$httpStatus.
         		' (actual: '.$this->_response->getStatusCode().')');
         }

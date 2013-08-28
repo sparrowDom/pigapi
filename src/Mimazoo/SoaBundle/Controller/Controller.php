@@ -9,6 +9,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\FacebookBundle\Facebook\FacebookSessionPersistence;
 
 use Mimazoo\SoaBundle\Hal\Hal;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -66,9 +67,8 @@ class Controller extends FOSRestController implements ClassResourceInterface
 	 * @param string $sortAlias
 	 * @return Hal
 	 */
-	protected function paginate(ParamFetcher $paramFetcher, $query, $sortAlias) 
+	protected function paginate(ParamFetcher $paramFetcher, $query, $sortAlias)
 	{
-		
 		$request = $this->getRequest();
 		
 		$params = $paramFetcher->all() + $this->getPagingParams();
@@ -114,6 +114,7 @@ class Controller extends FOSRestController implements ClassResourceInterface
 		
 		//paging links
 		$this->addPagingLinks($hal, $paginationData);
+		
 
 		//collection output
 		foreach ($items as $item) {
@@ -130,7 +131,27 @@ class Controller extends FOSRestController implements ClassResourceInterface
 		return $hal;
 		
 	}
-	
+
+    protected function handleFacebookApiError(\FacebookApiException $exception, FacebookSessionPersistence $facebook, $token){
+        $result = $exception->getResult();
+        if(isset($result['error'])){
+            $error = $result['error'];
+            if(isset($error['code']) && isset($error['error_subcode'])){
+                $code = $error['code'];
+                $subCode = $error['error_subcode'];
+
+                if($code == 190){
+                    if($subCode == 463){
+                        return array('success' => 'false', 'error' => 11, 'errorMsg' => 'Token expired');
+                    }
+                    else{
+                        return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
+                    }
+                }
+            }
+        }
+    }
+
 	/**
 	 * Default resource link generation
 	 * 
@@ -215,7 +236,7 @@ class Controller extends FOSRestController implements ClassResourceInterface
 		$request = $this->getRequest();
 		
 		$queryParams = array();
-
+		
 		if ($request->get('expand')) {
 			$queryParams['expand'] = $request->get(self::EXPAND_PARAM_NAME);
 		}
@@ -231,7 +252,20 @@ class Controller extends FOSRestController implements ClassResourceInterface
 		if ($request->get('pageSize')) {
 			$queryParams['pageSize'] = $request->get('pageSize');
 		}
-			
+		
+		//If there is a profiler and has any records
+		if($this->get('profiler') != null){	  
+		    if(count($this->get('profiler')->find('', '', 1, '', '', '')) > 0){ 
+    		    $profileUrl = $this->generateUrl(
+    		                '_profiler',
+    		                array('token' => $this->get('profiler')->find('', '', 1, '', '', '')[0]['token']),
+    		                true
+    		    );
+    		    
+    		    $hal->addLink('profiler', $profileUrl, 'profiler');
+		    }
+		}
+		
 		if (isset($paginationData['previous'])) {
 			$this->addPagingLink($hal, 'prev', $paginationData['previous'], $queryParams);
 		}
@@ -324,7 +358,10 @@ class Controller extends FOSRestController implements ClassResourceInterface
 	private function getWildcardParamNamesForRouteName($route = NULL) {
 		
 		$route = (NULL === $route)?$this->getRequest()->get('_route'):$route;
-		$variables = $this->get('router')->getRouteCollection()->get($route)->compile()->getVariables();
+        if(is_object($this->get('router')->getRouteCollection()->get($route)))
+		    $variables = $this->get('router')->getRouteCollection()->get($route)->compile()->getVariables();
+        else
+            $variables = array();
 		
 		return $variables;
 	}
@@ -359,7 +396,7 @@ class Controller extends FOSRestController implements ClassResourceInterface
 	 * @param Form $form
 	 * @param Request $request
 	 */
-	private function filterOutUnexpectedFields(Form $form, Request $request) {
+	protected function filterOutUnexpectedFields(Form $form, Request $request) {
 		
 		//get form fields that are expected
 		$expectedFormFields = array_keys($form->all());
@@ -406,7 +443,7 @@ class Controller extends FOSRestController implements ClassResourceInterface
 			try {
 				$em->flush();
 			} catch (DBALException  $e) {
-				print_r($e->getMessage());die('foo');
+				//print_r($e->getMessage());die('foo');
 				return $this->view($e->getMessage(), 400);
 			}
 			

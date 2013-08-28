@@ -16,7 +16,7 @@ use JMS\Serializer\Annotation\Groups;
  */
 class Player extends BaseAuditableEntity
 {
-	
+
 	/**
      * @var integer $id
      *
@@ -26,12 +26,16 @@ class Player extends BaseAuditableEntity
      * @Groups({"always"})
      */
     protected $id;
-    
+
     /**
      * @var string $fbId
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=64, unique=true)
      * @Assert\NotBlank()
+     * @Assert\Length(min = "1",
+     *                max = "50",
+     *                minMessage = "Facebook id must be at least {{ limit }} characters long",
+     *                maxMessage = "Facebook id must be less then {{ limit }} characters long")
      * @Groups({"always"})
      */
     protected $fbId;
@@ -39,7 +43,11 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $fbAccessToken
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Length(min = "10",
+     *                max = "255",
+     *                minMessage = "Facebook token must be at least {{ limit }} characters long",
+     *                maxMessage = "Facebook token must be less then {{ limit }} characters long")
      * @Assert\NotBlank()
      * @Groups({"always"})
      */
@@ -48,8 +56,7 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $applePushToken
      *
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"always"})
      */
     protected $applePushToken;
@@ -58,17 +65,38 @@ class Player extends BaseAuditableEntity
      * @var string $name
      *
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min = "1",
+     *                max = "255",
+     *                minMessage = "Name must be at least {{ limit }} characters long",
+     *                maxMessage = "Name must be less then {{ limit }} characters long")
      * @Assert\NotBlank()
      * @Groups({"always"})
      */
     protected $name;
+
+    /**
+     * @var string $firstName
+     *
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Groups({"always"})
+     */
+    protected $firstName;
+
+
+    /**
+     * @var string $surname
+     *
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"always"})
+     */
+    protected $surname;
     
     
     /**
      * @var string $slug
      *
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(type="string", length=255)
      * @Groups({"always"})
      */
     protected $slug;
@@ -78,19 +106,64 @@ class Player extends BaseAuditableEntity
      *
      * @ORM\Column(type="integer")
      * @Assert\NotBlank()
+     * @Assert\Range(
+     *               min = -1,
+     *               max = 15000,
+     *               minMessage = "Your distance should be a positive number or -1",
+     *               maxMessage = "You ran more then 15000 meters? Who are you kidding?"
+     * )
      * @Groups({"always"})
      */
     protected $distanceBest;
-    
+
     /**
-     * @var boolean $challengesCounter
+     * @var integer $present_selected
      *
      * @ORM\Column(type="integer")
      * @Assert\NotBlank()
+     * @Assert\Range(
+     *               min = 0,
+     *               max = 15,
+     *               minMessage = "Selected present should be a positive number",
+     *               maxMessage = "Value {{ value }} for selected present is too big"
+     * )
      * @Groups({"always"})
      */
-    protected $challengesCounter;
+    protected $present_selected;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Player")
+     * @Assert\Valid(traverse=false)
+     * @ORM\JoinTable(name="friends",
+     *      joinColumns={@ORM\JoinColumn(name="player_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="other_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $friends;
+
+    /**
+     * Get friends
+     *
+     * @return ArrayCollection
+     */
+    public function getFriends(){
+        return $this->friends;
+    }
+
+    /**
+     * Set friends
+     *
+     * @param ArrayCollection $friends
+     * @return Player
+     */
+    public function setFriends(ArrayCollection $friends){
+        $this->friends = $friends;
+        return $this;
+    }
+
+    public function __construct() {
+        $this->friends = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -171,6 +244,27 @@ class Player extends BaseAuditableEntity
         return $this->applePushToken;
     }
 
+
+
+    /**
+     * Set name
+     *
+     * @param string $firstName
+     * @return Player
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
     /**
      * Set name
      *
@@ -192,6 +286,29 @@ class Player extends BaseAuditableEntity
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set surname
+     *
+     * @param string $surname
+     * @return Player
+     */
+    public function setSurname($surname)
+    {
+        $this->surname = $surname;
+
+        return $this;
+    }
+
+    /**
+     * Get surname
+     *
+     * @return string
+     */
+    public function getSurname()
+    {
+        return $this->surname;
     }
 
     /**
@@ -241,25 +358,76 @@ class Player extends BaseAuditableEntity
     }
 
     /**
-     * Set challengesCounter
+     * Add friends
      *
-     * @param integer $challengesCounter
+     * @param \Mimazoo\SoaBundle\Entity\Player $friends
      * @return Player
      */
-    public function setChallengesCounter($challengesCounter)
+    public function addFriend(\Mimazoo\SoaBundle\Entity\Player $friends)
     {
-        $this->challengesCounter = $challengesCounter;
+        $this->friends[] = $friends;
 
         return $this;
     }
 
     /**
-     * Get challengesCounter
+     * Remove friends
+     *
+     * @param \Mimazoo\SoaBundle\Entity\Player $friends
+     */
+    public function removeFriend(\Mimazoo\SoaBundle\Entity\Player $friends)
+    {
+        $this->friends->removeElement($friends);
+    }
+
+    public function toJson(){
+        $player = array('id' => $this->getId(),
+                        'name' => $this->getName(),
+                        'firstName' => $this->getFirstName(),
+                        'lastName' => $this->getSurname(),
+                        'fb_id' => $this->getFbId(),
+                        'present_id' => $this->getPresentSelected(),
+                        'distance' => $this->getDistanceBest()
+        );
+
+        $friends = array();
+        foreach($this->getFriends() as $friend){
+            $friends[] = array('id' => $friend->getId(),
+                               'name' => $friend->getName(),
+                               'firstName' => $friend->getFirstName(),
+                               'lastName' => $friend->getSurname(),
+                               'fb_id' => $friend->getFbId(),
+                               'present_id' => $friend->getPresentSelected(),
+                               'distance' => $friend->getDistanceBest()
+                              );
+        }
+
+        $player['friends'] = $friends;
+
+        return $player;
+    }
+
+
+    /**
+     * Set present_selected
+     *
+     * @param integer $presentSelected
+     * @return Player
+     */
+    public function setPresentSelected($presentSelected)
+    {
+        $this->present_selected = $presentSelected;
+
+        return $this;
+    }
+
+    /**
+     * Get present_selected
      *
      * @return integer 
      */
-    public function getChallengesCounter()
+    public function getPresentSelected()
     {
-        return $this->challengesCounter;
+        return $this->present_selected;
     }
 }

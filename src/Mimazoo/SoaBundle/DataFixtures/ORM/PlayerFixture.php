@@ -19,18 +19,41 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
 		
 		$players['mitja'] = new Player();
 		$players['mitja']->setFbId('620310212');
-		$players['mitja']->setFbAccessToken('CAACEdEose0cBABzQcWYmKRhOUI26qalQQ7R4ijLrnpB5ZAv8LdpJ5a2ElWXraoAywn5KRJLD4N6eaHwpmWzou0ZCvpoN0HauCwJUA8QsXIsjlH56ZABJA3nT5Rn4o58Ja60QheHq54m9dnuW3QykWEkBn5ajTrhZBUDbGYVSTgZDZD');
+		$players['mitja']->setFbAccessToken('whatever');
 		$players['mitja']->setApplePushToken('BLABLA123456789BLABLA');
 		$players['mitja']->setName('Mitja Poljšak');
-		$players['mitja']->setDistanceBest(1000);
-		$players['mitja']->setChallengesCounter(15);
-		
+        $players['mitja']->setSlug('mitja-poljsak');
+        $players['mitja']->setSurname('Poljšak');
+        $players['mitja']->setFirstName('Mitja');
+		$players['mitja']->setDistanceBest(-1);
+        $players['mitja']->setPresentSelected(1);
+
+        $players['domen'] = new Player();
+        $players['domen']->setFbId('608899282');
+        $players['domen']->setFbAccessToken('CAAFM6NnZBvQoBAMt4AOS033S1NMRQmlUt67W9P8Ri4iI9WB6kR6aGZA4ZCC6tMkZAwdZCqcPYfJOgSZANxZA4PJCkNgp94FYmLIBw1ABr6vMC1iFFzs1tH349XyPxzj5tP7r3M5H8mmDUUIXk4b2H8n');
+        $players['domen']->setApplePushToken('BLABLA123456789BLABLA');
+        $players['domen']->setSlug('domen-grabec');
+        $players['domen']->setName('Domen Grabec');
+        $players['domen']->setSurname('Grabec');
+        $players['domen']->setFirstName('Domen');
+        $players['domen']->setDistanceBest(-1);
+        $players['domen']->setPresentSelected(1);
+
 		foreach ($players as $key => $player) {
 			$manager->persist($player);
 			$manager->flush();
-			$this->addReference('player_' . $key, $player);
+			//$this->addReference('player_' . $key, $player);
 		}
-		
+
+        $players['domen']->addFriend($players['mitja']);
+        $players['mitja']->addFriend($players['domen']);
+
+        foreach ($players as $key => $player) {
+            $manager->persist($player);
+            $manager->flush();
+            //$this->addReference('player_' . $key, $player);
+        }
+
 	}
 	
 	public function getOrder()

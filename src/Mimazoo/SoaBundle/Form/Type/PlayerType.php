@@ -17,8 +17,8 @@ class PlayerType extends AbstractType
             ->add('applePushToken')
             ->add('name')
            	->add('slug')
+            ->add('present_selected')
             ->add('distanceBest')
-            ->add('challengesCounter')
             ->add('created', null, array('mapped' => false))
             ->add('updated', null, array('mapped' => false))
         ;
