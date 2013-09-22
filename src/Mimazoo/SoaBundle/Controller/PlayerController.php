@@ -84,7 +84,8 @@ class PlayerController extends Controller
         $token = $request->query->get('token');
         /* @var $facebook \FOS\FacebookBundle\FOSFacebookBundle */
         $facebook = $this->get('facebook');
-        $facebook->SetAccessToken($token);
+        //If token is empty string it does not get set
+        $facebook->SetAccessToken(strlen($token) > 0 ? $token : 'empty');
 
         $isNewPlayer = false;
 

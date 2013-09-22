@@ -136,19 +136,33 @@ class Controller extends FOSRestController implements ClassResourceInterface
         $result = $exception->getResult();
         if(isset($result['error'])){
             $error = $result['error'];
-            if(isset($error['code']) && isset($error['error_subcode'])){
+            if(isset($error['code'])){
                 $code = $error['code'];
-                $subCode = $error['error_subcode'];
+                if(isset($error['error_subcode'])){
+                    $subCode = $error['error_subcode'];
 
-                if($code == 190){
-                    if($subCode == 463){
-                        return array('success' => 'false', 'error' => 11, 'errorMsg' => 'Token expired');
+                    if($code == 190){
+                        if($subCode == 463){
+                            return array('success' => 'false', 'error' => 11, 'errorMsg' => 'Token expired');
+                        }
+                        else{
+                            return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
+                        }
                     }
                     else{
-                        return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
+                        return array('success' => 'false', 'error' => 12, 'errorMsg' => "Token invalid code: $code Error: " . implode($error, ','));
                     }
                 }
+                else{
+                    return array('success' => 'false', 'error' => 67, 'errorMsg' => "Unknown error, please try again later. Error: " . implode($error, ','));
+                }
             }
+            else{
+                return array('success' => 'false', 'error' => 68, 'errorMsg' => "Unknown error, please try again later. Error: " . implode($error, ','));
+            }
+        }
+        else{
+            return array('success' => 'false', 'error' => 69, 'errorMsg' => 'Unknown error, please try again later');
         }
     }
 

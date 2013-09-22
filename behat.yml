@@ -6,6 +6,7 @@ default:
         Behat\Symfony2Extension\Extension:
             bundle: MimazooSoaBundle
         VIPSoft\DoctrineDataFixturesExtension\Extension:
-            lifetime: scenario
+            lifetime: feature #
+            autoload: true
             fixtures:
               - Mimazoo\SoaBundle\DataFixtures\ORM\PlayerFixture
