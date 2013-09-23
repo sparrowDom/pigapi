@@ -99,7 +99,7 @@ Scenario: Trying to patch update a not whitelisted field
 Scenario: Log in one user
   Given that I want to find a "Player"
   #Ta token potece cez okrog 1.10.2013
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAMQbNbVCs2wL9JGW4INciqOV1n6gqcuZBBJ8XZCN6x3oLhZBrZBFpWtSZA6hpETV5d25LWpsYZCMZCSraGRUm4gPivLIR5q0st2PuZBlFndCvsQrzlTchGuoum36VHkoaQsNoXdSbMSG0BtXlhCs05ub0oF37Ju1vNmd9sqXMI6exBFMYt3JDKAZD"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBALDVZBIRM3wsomk9PwuNJ34P00YAhHwfAG36mh3tIm5zGHAH9Skx9VrGwPvoIKf2Ok4G2SPRtmap6P3hBkgISLTmFVIKkEZAN0A9ZBdlgZBtZCZC6en80F6BrWZAgKCAwAJ84ISEnTAfjh552Gb3ub4VvCaB8sc53ONm3JeHIqYFDPRt93BJ0UZD"
   When I request "/players/login"
   Then the response is JSON
   Then the response status code should be 200

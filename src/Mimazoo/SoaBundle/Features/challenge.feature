@@ -36,7 +36,7 @@ Scenario: Create a challenge correct id but not the challenger or challengee
 
 Scenario: Create a challenge, challenged reads it, wins and challenger reads it
   Given that I want to make a new "Challenge"
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAGn2ZBK3jFlyW2iE28FKvKTdgAer9QvuGt6LEtGrDxcYPIt2I8OsHATVqZADN58X2dA78mRre6NWtSGtEzk3yd8o4d9d75JbiiB0I5zyCTEuPeFIZAFSHwRrugxFtYtO9agpJirD3TPebxZApbpAH4GSOO7gUF0JOYYZANE56"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
   And that its "type" is "0"
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
@@ -69,7 +69,7 @@ Scenario: Create a challenge, challenged reads it, wins and challenger reads it
   Then the "state" data property equals "2" of type "int"
 
   Given that I want to find a "Challenge"
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAGn2ZBK3jFlyW2iE28FKvKTdgAer9QvuGt6LEtGrDxcYPIt2I8OsHATVqZADN58X2dA78mRre6NWtSGtEzk3yd8o4d9d75JbiiB0I5zyCTEuPeFIZAFSHwRrugxFtYtO9agpJirD3TPebxZApbpAH4GSOO7gUF0JOYYZANE56"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
   When I request "/challenges/1"
   Then the response status code should be 200
   Then the response is JSON
@@ -77,7 +77,7 @@ Scenario: Create a challenge, challenged reads it, wins and challenger reads it
 
 Scenario: Create a challenge
   Given that I want to make a new "Challenge"
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAGn2ZBK3jFlyW2iE28FKvKTdgAer9QvuGt6LEtGrDxcYPIt2I8OsHATVqZADN58X2dA78mRre6NWtSGtEzk3yd8o4d9d75JbiiB0I5zyCTEuPeFIZAFSHwRrugxFtYtO9agpJirD3TPebxZApbpAH4GSOO7gUF0JOYYZANE56"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
   And that its "type" is "0"
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
@@ -87,7 +87,7 @@ Scenario: Create a challenge
 
 Scenario: Create a challenge
   Given that I want to make a new "Challenge"
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAGn2ZBK3jFlyW2iE28FKvKTdgAer9QvuGt6LEtGrDxcYPIt2I8OsHATVqZADN58X2dA78mRre6NWtSGtEzk3yd8o4d9d75JbiiB0I5zyCTEuPeFIZAFSHwRrugxFtYtO9agpJirD3TPebxZApbpAH4GSOO7gUF0JOYYZANE56"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
   And that its "type" is "0"
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
@@ -97,7 +97,7 @@ Scenario: Create a challenge
 
 Scenario: Create a challenge
   Given that I want to make a new "Challenge"
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAGn2ZBK3jFlyW2iE28FKvKTdgAer9QvuGt6LEtGrDxcYPIt2I8OsHATVqZADN58X2dA78mRre6NWtSGtEzk3yd8o4d9d75JbiiB0I5zyCTEuPeFIZAFSHwRrugxFtYtO9agpJirD3TPebxZApbpAH4GSOO7gUF0JOYYZANE56"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
   And that its "type" is "0"
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
@@ -107,7 +107,7 @@ Scenario: Create a challenge
 
 Scenario: List challenges
   Given that I want to find a "Challenge"
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAGn2ZBK3jFlyW2iE28FKvKTdgAer9QvuGt6LEtGrDxcYPIt2I8OsHATVqZADN58X2dA78mRre6NWtSGtEzk3yd8o4d9d75JbiiB0I5zyCTEuPeFIZAFSHwRrugxFtYtO9agpJirD3TPebxZApbpAH4GSOO7gUF0JOYYZANE56"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
   When I request "/challenges"
   Then the response status code should be 200
   Then the response is JSON

@@ -8,3 +8,4 @@
 /composer.phar
 behat.yml
 composer.lock
+.idea
