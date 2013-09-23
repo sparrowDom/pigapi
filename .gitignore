@@ -8,4 +8,3 @@
 /composer.phar
 behat.yml
 composer.lock
-app/config/parameters.yml

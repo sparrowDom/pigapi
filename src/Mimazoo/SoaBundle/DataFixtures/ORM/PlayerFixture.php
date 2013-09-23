@@ -30,7 +30,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
 
         $players['domen'] = new Player();
         $players['domen']->setFbId('608899282');
-        $players['domen']->setFbAccessToken('CAAFM6NnZBvQoBAGn2ZBK3jFlyW2iE28FKvKTdgAer9QvuGt6LEtGrDxcYPIt2I8OsHATVqZADN58X2dA78mRre6NWtSGtEzk3yd8o4d9d75JbiiB0I5zyCTEuPeFIZAFSHwRrugxFtYtO9agpJirD3TPebxZApbpAH4GSOO7gUF0JOYYZANE56');
+        $players['domen']->setFbAccessToken('CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY');
         $players['domen']->setApplePushToken('BLABLA123456789BLABLA');
         $players['domen']->setSlug('domen-grabec');
         $players['domen']->setName('Domen Grabec');

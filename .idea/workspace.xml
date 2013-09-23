@@ -5,19 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a719f078-7160-4a87-8910-c639e22d7a0f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/BaseAuditableEntity.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/BaseAuditableEntity.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Challenge.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Challenge.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/ChallengeController.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/ChallengeController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/Controller.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/Controller.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Player.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Player.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/PlayerController.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/PlayerController.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/DataFixtures/ORM/PlayerFixture.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/DataFixtures/ORM/PlayerFixture.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/Context/RestContext.php" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/Context/RestContext.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/ls.feature" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/ls.feature" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/player.feature" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/player.feature" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Resources/config/routing.yml" afterPath="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Resources/config/routing.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="pigapi.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -64,15 +53,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Challenge.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Challenge.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="51" selection-start="1762" selection-end="1762" vertical-scroll-proportion="-6.6666665">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ChallengeController.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/ChallengeController.php">
           <provider selected="true" editor-type-id="text-editor">
@@ -98,7 +78,7 @@
       <file leaf-file-name="PlayerController.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/PlayerController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="190" column="8" selection-start="5599" selection-end="5669" vertical-scroll-proportion="-8.072727">
+            <state line="126" column="38" selection-start="3852" selection-end="3852" vertical-scroll-proportion="-4.9636364">
               <folding>
                 <element signature="e#48#96#0" expanded="true" />
               </folding>
@@ -109,7 +89,7 @@
       <file leaf-file-name="player.feature" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/player.feature">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="153" column="1" selection-start="8682" selection-end="8682" vertical-scroll-proportion="0.8275449">
+            <state line="101" column="2" selection-start="5637" selection-end="5637" vertical-scroll-proportion="0.33413175">
               <folding />
             </state>
           </provider>
@@ -136,7 +116,7 @@
       <file leaf-file-name="PlayerFixture.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/DataFixtures/ORM/PlayerFixture.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="51" column="0" selection-start="2496" selection-end="2496" vertical-scroll-proportion="-18.481482">
+            <state line="32" column="232" selection-start="1234" selection-end="1421" vertical-scroll-proportion="-18.296297">
               <folding />
             </state>
           </provider>
@@ -145,10 +125,19 @@
       <file leaf-file-name="Controller.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/Controller.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="134" column="39" selection-start="3228" selection-end="3244" vertical-scroll-proportion="-19.62963">
+            <state line="144" column="49" selection-start="3556" selection-end="3556" vertical-scroll-proportion="-4.296296">
               <folding>
                 <element signature="e#48#93#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="parameters.yml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/config/parameters.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="66" selection-start="452" selection-end="452" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -171,7 +160,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/vendor/symfony/symfony/src/Symfony/Component/Form/Form.php" />
         <option value="$PROJECT_DIR$/composer.json" />
         <option value="$PROJECT_DIR$/app/config/config_prod.yml" />
         <option value="$PROJECT_DIR$/behat.yml" />
@@ -181,11 +169,12 @@
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Challenge.php" />
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Player.php" />
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/PlayerController.php" />
-        <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/DataFixtures/ORM/PlayerFixture.php" />
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/ChallengeController.php" />
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/challenge.feature" />
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/ls.feature" />
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/Context/RestContext.php" />
+        <option value="$PROJECT_DIR$/app/config/parameters.yml" />
+        <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/DataFixtures/ORM/PlayerFixture.php" />
         <option value="$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/player.feature" />
       </list>
     </option>
@@ -193,7 +182,7 @@
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
     <option name="x" value="-1855" />
-    <option name="y" value="24" />
+    <option name="y" value="1104" />
     <option name="width" value="1855" />
     <option name="height" value="1056" />
   </component>
@@ -675,7 +664,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1855" y="24" width="1855" height="1056" extended-state="6" />
+    <frame x="-1855" y="1104" width="1855" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.216971" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -762,13 +751,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/config/security.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/config/routing_dev.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
@@ -804,28 +786,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/Controller.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="134" column="39" selection-start="3228" selection-end="3244" vertical-scroll-proportion="-19.62963">
-          <folding>
-            <element signature="e#48#93#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Entity/Challenge.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="69" column="51" selection-start="1762" selection-end="1762" vertical-scroll-proportion="-6.6666665">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/PlayerController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="190" column="8" selection-start="5599" selection-end="5669" vertical-scroll-proportion="-8.072727">
-          <folding>
-            <element signature="e#48#96#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -852,22 +816,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/Context/FeatureContext.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="26" selection-start="1666" selection-end="1668" vertical-scroll-proportion="0.03533569">
-          <folding>
-            <element signature="e#54#103#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/DataFixtures/ORM/PlayerFixture.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="0" selection-start="2496" selection-end="2496" vertical-scroll-proportion="-18.481482">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/Context/RestContext.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="303" column="90" selection-start="9453" selection-end="9453" vertical-scroll-proportion="-9.2">
@@ -877,9 +825,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/PlayerController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="38" selection-start="3852" selection-end="3852" vertical-scroll-proportion="-4.9636364">
+          <folding>
+            <element signature="e#48#96#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Controller/Controller.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="144" column="49" selection-start="3556" selection-end="3556" vertical-scroll-proportion="-4.296296">
+          <folding>
+            <element signature="e#48#93#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/config/parameters.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="66" selection-start="452" selection-end="452" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/Context/FeatureContext.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="66" column="26" selection-start="1666" selection-end="1668" vertical-scroll-proportion="0.036513545">
+          <folding>
+            <element signature="e#54#103#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/DataFixtures/ORM/PlayerFixture.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="232" selection-start="1234" selection-end="1421" vertical-scroll-proportion="-18.296297">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Mimazoo/SoaBundle/Features/player.feature">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="153" column="1" selection-start="8682" selection-end="8682" vertical-scroll-proportion="0.8275449">
+        <state line="101" column="2" selection-start="5637" selection-end="5637" vertical-scroll-proportion="0.33413175">
           <folding />
         </state>
       </provider>
