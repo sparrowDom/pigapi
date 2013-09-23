@@ -55,11 +55,7 @@ class PlayerController extends Controller
      */
     public function meAction(Request $request){
 
-        $token = $request->query->get('token');
-        $repository = $this->getDoctrine()
-            ->getRepository('MimazooSoaBundle:Player');
-
-        $player = $repository->findOneByFbAccessToken($token);
+        $player = $this->GetPlayerByToken($request);
 
         if($player == null){
             return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
@@ -70,7 +66,7 @@ class PlayerController extends Controller
             'id'  => $player->getId(),
             'player' => $player
         ),
-        array('token' => $token));
+        array('token' => $player->getFbAccessToken()));
 
         return $response;
 
@@ -84,7 +80,8 @@ class PlayerController extends Controller
         $token = $request->query->get('token');
         /* @var $facebook \FOS\FacebookBundle\FOSFacebookBundle */
         $facebook = $this->get('facebook');
-        $facebook->SetAccessToken($token);
+        //If token is empty string it does not get set
+        $facebook->SetAccessToken(strlen($token) > 0 ? $token : 'empty');
 
         $isNewPlayer = false;
 
@@ -197,7 +194,7 @@ class PlayerController extends Controller
     /*
      * I guess we could expand this sometime in the future
      */
-    protected function handleIsAuthorised(Player $player, $token){
+    public function handleIsAuthorised(Player $player, $token){
         if(strcmp($player->getFbAccessToken(), $token) != 0){
             //Authorisation was ok but the resource is forbidden
             return $this->view(array('success' => 'false', 'error' => 14, 'errorMsg' => 'Forbidden resource'), 403);

@@ -232,10 +232,11 @@ class RestContext extends BehatContext implements KernelAwareInterface
                     ->send();
                 break;
             case 'POST':
-            	$postFields = (array)$this->_restObject;
+            	//$postFields = (array)$this->_restObject;
+                $body = json_encode((array)$this->_restObject);
                 $response = $this->_client
                     //->post($this->_requestUrl,$oauth,$postFields)
-                    ->post($this->_requestUrl,null,$postFields)
+                    ->post($this->_requestUrl,null,$body)
                     ->setHeader("Content-Type", "application/json")
                     ->send();
                 
@@ -298,8 +299,9 @@ class RestContext extends BehatContext implements KernelAwareInterface
                     throw new \Exception("Property '".$propertyName."' is not an array!\n");
                 }
 
-                if(intval($data->$propertyName) !== intval($arrayLength)){
-                    throw new \Exception("Array '".$propertyName."' is of length " . intval($arrayLength) . " expected: " . $arrayLength . "!\n");
+                if(count($data->$propertyName) !== intval($arrayLength)){
+                    print_r($data);
+                    throw new \Exception("Array '".$propertyName."' is of length " . count($data->$propertyName) . " expected: " . $arrayLength . "!\n");
                 }
             } else {
                 throw new \Exception("Response data was empty\n" . $data);
@@ -309,6 +311,26 @@ class RestContext extends BehatContext implements KernelAwareInterface
         }
     }
 
+    /**
+     * @Then /^the response data is an array that has "([^"]*)" items$/
+     */
+    public function theResponseDataArrayCount($arraySize)
+    {
+        $data = json_decode($this->_response->getBody(true));
+
+        if (!empty($data)) {
+            $data = $data->data;
+            if (!empty($data)) {
+                if (count($data) != intval($arraySize)) {
+                    throw new \Exception("Data has '".count($data)."' items and not '$arraySize' as expected!\n");
+                }
+            } else {
+                throw new \Exception("Response data was empty\n" . $data);
+            }
+        } else {
+            throw new \Exception("Response was not JSON\n" . $this->_response->getBody(true));
+        }
+    }
 
     /**
      * @Then /^the response data has a "([^"]*)" property$/
@@ -430,7 +452,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
             switch (strtolower($typeString)) {
                 case 'numeric':
                     if (!is_numeric($data->$propertyName)) {
-                        throw new Exception("Property '".$propertyName."' is not of the correct type: ".$theTypeOfThePropertyIsNumeric."!\n");
+                        throw new Exception("Property '".$propertyName."' is not of the correct type: " . $theTypeOfThePropertyIsNumeric . "!\n");
                     }
                     break;
             }
@@ -447,7 +469,6 @@ class RestContext extends BehatContext implements KernelAwareInterface
     {
     	
         if ((string)$this->_response->getStatusCode() !== $httpStatus) {
-        	//print_r($this->_response->getBody(true));die();
         	throw new \Exception('HTTP code does not match '.$httpStatus.
         		' (actual: '.$this->_response->getStatusCode().')');
         }

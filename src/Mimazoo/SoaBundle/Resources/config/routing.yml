@@ -1,3 +1,7 @@
 player:
     type:     rest
     resource: Mimazoo\SoaBundle\Controller\PlayerController
+
+challenge:
+    type:     rest
+    resource: Mimazoo\SoaBundle\Controller\ChallengeController
