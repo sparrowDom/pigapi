@@ -12,7 +12,7 @@ framework:
     #    cache: apc
     
 parameters:
-    database_name:     pigdb_test
+    database_name:     pigdb_prod
     
 #doctrine:
 #    orm:
