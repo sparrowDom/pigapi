@@ -132,6 +132,16 @@ class Controller extends FOSRestController implements ClassResourceInterface
 		
 	}
 
+    protected function GetPlayerByToken(Request $request){
+        $token = $request->query->get('token');
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:Player');
+
+        $player = $repository->findOneByFbAccessToken($token);
+
+        return $player;
+    }
+
     protected function handleFacebookApiError(\FacebookApiException $exception, FacebookSessionPersistence $facebook, $token){
         $result = $exception->getResult();
         if(isset($result['error'])){

@@ -380,7 +380,7 @@ class Player extends BaseAuditableEntity
         $this->friends->removeElement($friends);
     }
 
-    public function toJson(){
+    public function toJson($isPublicView = false){
         $player = array('id' => $this->getId(),
                         'name' => $this->getName(),
                         'firstName' => $this->getFirstName(),
@@ -390,19 +390,22 @@ class Player extends BaseAuditableEntity
                         'distance' => $this->getDistanceBest()
         );
 
-        $friends = array();
-        foreach($this->getFriends() as $friend){
-            $friends[] = array('id' => $friend->getId(),
-                               'name' => $friend->getName(),
-                               'firstName' => $friend->getFirstName(),
-                               'lastName' => $friend->getSurname(),
-                               'fb_id' => $friend->getFbId(),
-                               'present_id' => $friend->getPresentSelected(),
-                               'distance' => $friend->getDistanceBest()
-                              );
+        if(!$isPublicView){
+            $friends = array();
+            foreach($this->getFriends() as $friend){
+                $friends[] = array('id' => $friend->getId(),
+                    'name' => $friend->getName(),
+                    'firstName' => $friend->getFirstName(),
+                    'lastName' => $friend->getSurname(),
+                    'fb_id' => $friend->getFbId(),
+                    'present_id' => $friend->getPresentSelected(),
+                    'distance' => $friend->getDistanceBest()
+                );
+            }
+
+            $player['friends'] = $friends;
         }
 
-        $player['friends'] = $friends;
 
         return $player;
     }

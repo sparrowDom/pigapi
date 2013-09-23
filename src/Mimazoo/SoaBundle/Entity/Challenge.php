@@ -44,6 +44,10 @@ class Challenge extends BaseAuditableEntity
 
 
     /**
+     *
+     * 0 means coins
+     * 1 means distance
+     *
      * @var integer $type
      *
      * @ORM\Column(type="integer")
@@ -63,6 +67,7 @@ class Challenge extends BaseAuditableEntity
      * 1 means challenge received by the challenged
      * 2 means challenge won by challenger
      * 3 means challenge won by challenged
+     * 4 means challenge received by the challenger
      *
      * @var integer $state
      *
@@ -70,7 +75,7 @@ class Challenge extends BaseAuditableEntity
      * @Assert\NotBlank()
      * @Assert\Range(
      *               min = 0,
-     *               max = 3,
+     *               max = 4,
      *               minMessage = "Selected present should be a positive number",
      *               maxMessage = "Value {{ value }} for selected present is too big"
      * )
@@ -82,19 +87,21 @@ class Challenge extends BaseAuditableEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="Player")
+     * @Assert\NotBlank()
      * @Assert\Valid(traverse=false)
      * @ORM\JoinColumn(name="challenger_id", referencedColumnName="id"
      *      )
      */
-    protected $challenger_id;
+    protected $challengerPlayer;
 
     /**
      * @ORM\ManyToOne(targetEntity="Player")
+     * @Assert\NotBlank()
      * @Assert\Valid(traverse=false)
      * @ORM\JoinColumn(name="challenged_id", referencedColumnName="id"
      *      )
      */
-    protected $challenged_id;
+    protected $challengedPlayer;
 
 
     /**
@@ -120,12 +127,11 @@ class Challenge extends BaseAuditableEntity
         return $this->id;
     }
 
-
     public function toJson(){
 
         return array('id' => $this->getId(),
-            'challenger_id' => $this->getChallengerId(),
-            'challenged_id' => $this->getChallengedId(),
+            'challenger' => $this->getChallengedPlayer()->toJson(true),
+            'challenged' => $this->getChallengerPlayer()->toJson(true),
             'state' => $this->getState(),
             'type' => $this->getType(),
             'value' => $this->getValue(),
@@ -157,14 +163,14 @@ class Challenge extends BaseAuditableEntity
     }
 
     /**
-     * Set challenger_id
+     * Set challengerPlayer
      *
-     * @param \Mimazoo\SoaBundle\Entity\Player $challengerId
+     * @param \Mimazoo\SoaBundle\Entity\Player $challengerPlayer
      * @return Challenge
      */
-    public function setChallengerId(\Mimazoo\SoaBundle\Entity\Player $challengerId = null)
+    public function setChallengerPlayer(\Mimazoo\SoaBundle\Entity\Player $challengerPlayer = null)
     {
-        $this->challenger_id = $challengerId;
+        $this->challengerPlayer = $challengerPlayer;
 
         return $this;
     }
@@ -174,20 +180,20 @@ class Challenge extends BaseAuditableEntity
      *
      * @return \Mimazoo\SoaBundle\Entity\Player 
      */
-    public function getChallengerId()
+    public function getChallengerPlayer()
     {
-        return $this->challenger_id;
+        return $this->challengerPlayer;
     }
 
     /**
-     * Set challenged_id
+     * Set challengedPlayer
      *
-     * @param \Mimazoo\SoaBundle\Entity\Player $challengedId
+     * @param \Mimazoo\SoaBundle\Entity\Player $challengedPlayer
      * @return Challenge
      */
-    public function setChallengedId(\Mimazoo\SoaBundle\Entity\Player $challengedId = null)
+    public function setChallengedPlayer(\Mimazoo\SoaBundle\Entity\Player $challengedPlayer = null)
     {
-        $this->challenged_id = $challengedId;
+        $this->challengedPlayer = $challengedPlayer;
 
         return $this;
     }
@@ -197,9 +203,9 @@ class Challenge extends BaseAuditableEntity
      *
      * @return \Mimazoo\SoaBundle\Entity\Player 
      */
-    public function getChallengedId()
+    public function getChallengedPlayer()
     {
-        return $this->challenged_id;
+        return $this->challengedPlayer;
     }
 
     /**
