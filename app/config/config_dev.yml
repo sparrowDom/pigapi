@@ -9,6 +9,9 @@ web_profiler:
     toolbar: true
     intercept_redirects: false
 
+parameters:
+    database_name:     pigdb_dev
+
 monolog:
     handlers:
         main:

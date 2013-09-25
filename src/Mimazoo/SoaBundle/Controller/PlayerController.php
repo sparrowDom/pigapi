@@ -217,7 +217,7 @@ class PlayerController extends Controller
     /**
      * @View(statusCode="204")
      */
-    public function putAction(Player $player)
+    public function postAction(Player $player)
     {
         $request = $this->getRequest();
         $token = $request->query->get('token');

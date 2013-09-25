@@ -94,7 +94,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     public function thatIWantToUpdateA($objectType)
     {
     	$this->_restObjectType   = ucwords(strtolower($objectType));
-        $this->_restObjectMethod = 'put';
+        $this->_restObjectMethod = 'post';
     }
     
     /**

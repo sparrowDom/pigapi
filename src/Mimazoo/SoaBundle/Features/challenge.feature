@@ -10,7 +10,7 @@ Scenario: Create a challenge wrong challenger id
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282xxx"
   And that its "challenged_fbid" is "100006480546572"
-  When I request "/challenge"
+  When I request "/challenge/new"
   Then the response status code should be 400
 
 Scenario: Create a challenge wrong challenged id
@@ -20,7 +20,7 @@ Scenario: Create a challenge wrong challenged id
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
   And that its "challenged_fbid" is "100006480546572xxx"
-  When I request "/challenge"
+  When I request "/challenge/new"
   Then the response status code should be 400
 
 Scenario: Create a challenge correct id but not the challenger or challengee
@@ -30,7 +30,7 @@ Scenario: Create a challenge correct id but not the challenger or challengee
   And that its "value" is "122"
   And that its "challenger_fbid" is "620310212"
   And that its "challenged_fbid" is "100006480546572xxx"
-  When I request "/challenge"
+  When I request "/challenge/new"
   Then the response status code should be 400
 
 
@@ -41,7 +41,7 @@ Scenario: Create a challenge, challenged reads it, wins and challenger reads it
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
   And that its "challenged_fbid" is "100006480546572"
-  When I request "/challenge"
+  When I request "/challenge/new"
   Then the response status code should be 204
 
   Given that I want to find a "Challenge"
@@ -82,7 +82,7 @@ Scenario: Create a challenge
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
   And that its "challenged_fbid" is "620310212"
-  When I request "/challenge"
+  When I request "/challenge/new"
   Then the response status code should be 204
 
 Scenario: Create a challenge
@@ -92,7 +92,7 @@ Scenario: Create a challenge
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
   And that its "challenged_fbid" is "100006480546572"
-  When I request "/challenge"
+  When I request "/challenge/new"
   Then the response status code should be 204
 
 Scenario: Create a challenge
@@ -102,7 +102,7 @@ Scenario: Create a challenge
   And that its "value" is "122"
   And that its "challenger_fbid" is "608899282"
   And that its "challenged_fbid" is "100006462098682"
-  When I request "/challenge"
+  When I request "/challenge/new"
   Then the response status code should be 204
 
 Scenario: List challenges

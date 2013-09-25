@@ -98,51 +98,6 @@ class ChallengeController extends Controller
 
     }
 
-    /**
-     * @View(statusCode="204")
-     */
-    public function postAction(Request $request)
-    {
-        $player = $this->GetPlayerByToken($request);
-
-        if($player == null){
-            return $this->view(array('success' => 'false', 'errorMsg' => 'Token invalid'), 400);
-        }
-
-        print_r(implode(',', $request->request->all()) . "XXXX");
-
-        $challenger = $this->GetPlayerByFbId($request->request->get("challenger_fbid"));
-        $challenged = $this->GetPlayerByFbId($request->request->get("challenged_fbid"));
-
-        if($challenger == false)
-            return $this->view(array('success' => 'false', 'errorMsg' => 'Challenger facebook id is invalid'), 400);
-
-        if($challenged == false)
-            return $this->view(array('success' => 'false', 'errorMsg' => 'Challenged facebook id is invalid'), 400);
-
-        //Player is not challenger
-        if($challenger->getId() != $player->getId()){
-            return $this->view(array('success' => 'false', 'errorMsg' => 'Only challenger can create a challenge'), 400);
-        }
-
-        $activeChallenges = $this->GetActiveChallenge($challenger, $challenged);
-
-        if(count($activeChallenges) > 0)
-            return $this->view(array('success' => 'false', 'errorMsg' => 'Can not create new challenge, challenge already active.'), 400);
-
-        $challenge = new Challenge();
-        $challenge->setChallengedPlayer($challenged);
-        $challenge->setChallengerPlayer($challenger);
-        $challenge->setState(0);
-        $type = $request->request->get("type");
-        $value = $request->request->get("value");
-        $challenge->setType($type);
-        $challenge->setValue($value);
-        $challenge->setReward(ChallengeController::GetRewardFromTypeAndValue($type, $value));
-
-        return $this->processChallenge($challenge);
-    }
-
     protected function GetPlayerByFbId($fbId){
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:Player');
@@ -203,7 +158,53 @@ class ChallengeController extends Controller
     /**
      * @View(statusCode="204")
      */
-    public function putAction(Challenge $challenge, Request $request)
+    public function postNewAction(Request $request)
+    {
+        $player = $this->GetPlayerByToken($request);
+
+        if($player == null){
+            return $this->view(array('success' => 'false', 'errorMsg' => 'Token invalid'), 400);
+        }
+
+        print_r(implode(',', $request->request->all()) . "XXXX");
+
+        $challenger = $this->GetPlayerByFbId($request->request->get("challenger_fbid"));
+        $challenged = $this->GetPlayerByFbId($request->request->get("challenged_fbid"));
+
+        if($challenger == false)
+            return $this->view(array('success' => 'false', 'errorMsg' => 'Challenger facebook id is invalid'), 400);
+
+        if($challenged == false)
+            return $this->view(array('success' => 'false', 'errorMsg' => 'Challenged facebook id is invalid'), 400);
+
+        //Player is not challenger
+        if($challenger->getId() != $player->getId()){
+            return $this->view(array('success' => 'false', 'errorMsg' => 'Only challenger can create a challenge'), 400);
+        }
+
+        $activeChallenges = $this->GetActiveChallenge($challenger, $challenged);
+
+        if(count($activeChallenges) > 0)
+            return $this->view(array('success' => 'false', 'errorMsg' => 'Can not create new challenge, challenge already active.'), 400);
+
+        $challenge = new Challenge();
+        $challenge->setChallengedPlayer($challenged);
+        $challenge->setChallengerPlayer($challenger);
+        $challenge->setState(0);
+        $type = $request->request->get("type");
+        $value = $request->request->get("value");
+        $challenge->setType($type);
+        $challenge->setValue($value);
+        $challenge->setReward(ChallengeController::GetRewardFromTypeAndValue($type, $value));
+
+        return $this->processChallenge($challenge);
+    }
+
+
+    /**
+     * @View(statusCode="204")
+     */
+    public function postAction(Challenge $challenge, Request $request)
     {
 
         $player = $this->GetPlayerByToken($request);
