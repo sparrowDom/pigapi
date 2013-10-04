@@ -75,6 +75,33 @@ class PlayerController extends Controller
     /**
      * @View(statusCode="200")
      */
+    public function highscoresAction(Request $request){
+        $player = $this->GetPlayerByToken($request);
+
+        if($player == null){
+            return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
+        }
+
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:Player');
+
+        $qb = $repository->createQueryBuilder('p');
+        $qb->orderBy('p.distanceBest', 'DESC')
+            ->setMaxResults(20);
+
+        $players = array();
+
+        foreach($qb->getQuery()->getResult() as $player){
+            $players[] = $player->toJson(true);
+        }
+
+        return array('success' => 'true', 'data' => $players);
+
+    }
+
+    /**
+     * @View(statusCode="200")
+     */
     public function loginAction(Request $request){
 
         $token = $request->query->get('token');

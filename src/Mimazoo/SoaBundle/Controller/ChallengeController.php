@@ -166,7 +166,7 @@ class ChallengeController extends Controller
             return $this->view(array('success' => 'false', 'errorMsg' => 'Token invalid'), 400);
         }
 
-        print_r(implode(',', $request->request->all()) . "XXXX");
+        //print_r(implode(',', $request->request->all()) . "XXXX");
 
         $challenger = $this->GetPlayerByFbId($request->request->get("challenger_fbid"));
         $challenged = $this->GetPlayerByFbId($request->request->get("challenged_fbid"));

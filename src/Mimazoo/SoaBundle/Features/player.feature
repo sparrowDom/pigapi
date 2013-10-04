@@ -121,8 +121,8 @@ Scenario: Log in one user
   Then the response data has a "friends" property
   Then the response data has an array property "friends" of length "1"
 
-  #Ta token potece cez okrog 1.10.2013
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAEtKBLeh28T6ZCJkdsDBTgcIEClcSlZACIb06GQj3ZCOB4ZAg6ffp0r4FZBBzJbWAKm4MB6uAwIiZAqPMB6RCkvPPF5L7WCKc0ZA1SGVuAdtS0STH8GkyZAclKbSel3PA4JooQzmQZCIuG24XTQtjkVkZD"
+  #Ta token potece cez okrog 1.12.2013
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAF27L7I1BHZCx3D0p6EUjPeeZBAv9BQeGZBn72NyhKdFRrix32RCKuQZAiOufvzS0lmvPxvZBcNHaTtx82JPPof5Q06j7MmcWvRvAguZB5ZB7eTMQ9dmRyea878HMqpD1impjsxWmZBooOJfw7GbnOHevxlG4hQZCsMNdSxji4P5MOyLGTrWWXAIZD"
   When I request "/players/login"
   Then the response is JSON
   Then the response status code should be 200
@@ -143,6 +143,15 @@ Scenario: Log in one user
   Then the response data has a "present_id" property
   Then the response data has a "friends" property
   Then the response data has an array property "friends" of length "2"
+
+Scenario: Browse highscores
+  Given that I want to find a "Player"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAE9Y2qydlfTo6pMfoVpDLkglq8gQwZBREnBPXBXMGXgQcXLKTmAv5Fc1cnaI1crFO8qdJy73DnG1ZCImv2aNH0waaKx2Ch4Vihl6DZCTqtoAJEKXFHDYlxZCaJskOwrKUwwbN1z0atmXFkXX1MKRFqM3ZAovg0RBzt3qNurgO"
+  When I request "/players/highscores"
+  Then the response is JSON
+  Then the "success" property equals "true" of type "string"
+  Then the response data is an array that has "6" items
+
 
 #  Given that I want to find a "Player"
 #  And that query parameter's "token" value is "CAAFM6NnZBvQoBAMQbNbVCs2wL9JGW4INciqOV1n6gqcuZBBJ8XZCN6x3oLhZBrZBFpWtSZA6hpETV5d25LWpsYZCMZCSraGRUm4gPivLIR5q0st2PuZBlFndCvsQrzlTchGuoum36VHkoaQsNoXdSbMSG0BtXlhCs05ub0oF37Ju1vNmd9sqXMI6exBFMYt3JDKAZD"
