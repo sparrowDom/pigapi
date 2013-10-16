@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation\Groups;
  * Mimazoo\SoaBundle\Entity\Player
  *
  * @ORM\Entity
+ * @ORM\Table(indexes={@ORM\Index(name="distance_idx", columns={"distance_best"})})
  */
 class Player extends BaseAuditableEntity
 {
