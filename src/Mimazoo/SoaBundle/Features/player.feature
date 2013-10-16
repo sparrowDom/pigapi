@@ -147,7 +147,7 @@ Scenario: Log in one user
 Scenario: Browse highscores
   Given that I want to find a "Player"
   And that query parameter's "token" value is "CAAFM6NnZBvQoBAE9Y2qydlfTo6pMfoVpDLkglq8gQwZBREnBPXBXMGXgQcXLKTmAv5Fc1cnaI1crFO8qdJy73DnG1ZCImv2aNH0waaKx2Ch4Vihl6DZCTqtoAJEKXFHDYlxZCaJskOwrKUwwbN1z0atmXFkXX1MKRFqM3ZAovg0RBzt3qNurgO"
-  When I request "/players/highscores"
+  When I request "/players/highscores/alltime"
   Then the response is JSON
   Then the "success" property equals "true" of type "string"
   Then the response data is an array that has "6" items

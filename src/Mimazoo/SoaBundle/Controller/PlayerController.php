@@ -75,7 +75,7 @@ class PlayerController extends Controller
     /**
      * @View(statusCode="200")
      */
-    public function highscoresAction(Request $request){
+    public function alltimeHighscoresAction(Request $request){
         $player = $this->GetPlayerByToken($request);
 
         if($player == null){
