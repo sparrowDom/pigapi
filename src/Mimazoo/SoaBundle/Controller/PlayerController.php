@@ -85,14 +85,46 @@ class PlayerController extends Controller
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:Player');
 
+
         $qb = $repository->createQueryBuilder('p');
         $qb->orderBy('p.distanceBest', 'DESC')
             ->setMaxResults(20);
 
-        $players = array();
 
-        foreach($qb->getQuery()->getResult() as $player){
-            $players[] = $player->toJson(true);
+        $players = array();
+        $count = 0;
+        $playerInResultSet = false;
+        foreach($qb->getQuery()->getResult() as $topPlayer){
+            $count++;
+            if($topPlayer->getId() == $player->getId()){
+                $playerInResultSet = true;
+            }
+            $players[] = $topPlayer->toJson(true, $count);
+        }
+
+        //Player not in top players list. Find and add him to the results
+        if(!$playerInResultSet){
+            //Remove last inserted player
+            array_pop($players);
+            $q = $this->getDoctrine()->GetConnection($this->getDoctrine()->getDefaultConnectionName());
+            /*
+             * $var Doctrine\DBAL\Driver\PDOStatement
+             */
+            $result = $q->query("select *, FIND_IN_SET(distance_best, ( SELECT GROUP_CONCAT( distance_best ORDER BY distance_best DESC) FROM player)) as rank FROM player where id=" . $player->GetId() . ";");
+            foreach($result as $value){
+                $players[] = array('id' => intval($value['id']),
+                                   'name' => $value['name'],
+                                   'firstName' => $value['first_name'],
+                                   'lastName' => $value['surname'],
+                                   'fb_id' => $value['fb_id'],
+                                   'present_id' => intval($value['present_selected']),
+                                   'distance' => intval($value['distance_best']),
+                                   'rank' => intval($value['rank']),
+                );
+
+                //should never be more than 1 result
+                break;
+            }
         }
 
         return array('success' => 'true', 'data' => $players);
