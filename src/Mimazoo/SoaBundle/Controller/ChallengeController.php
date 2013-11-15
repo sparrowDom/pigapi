@@ -217,9 +217,9 @@ class ChallengeController extends Controller
             return $this->view(array('success' => 'false', 'errorMsg' => 'Can not update challenge that is already finished'), 400);
         }
 
-        //Player is challenger
-        if($challenge->getChallengerPlayer()->getId() == $player->getId()){
-            return $this->view(array('success' => 'false', 'errorMsg' => 'Challenger can not update a challenge'), 400);
+        //Player is challenger. Allow only to update to state 4 here
+        if($challenge->getChallengerPlayer()->getId() == $player->getId() && challenge->getState() != 4){
+            return $this->view(array('success' => 'false', 'errorMsg' => 'Challenger can not update a challenge to other but state 4'), 400);
         }
         //Player is not challenged one
         else if($challenge->getChallengedPlayer()->getId() != $player->getId()){
