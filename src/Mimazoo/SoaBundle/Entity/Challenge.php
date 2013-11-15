@@ -139,6 +139,7 @@ class Challenge extends BaseAuditableEntity
         return array('id' => $this->getId(),
             'challenged' => $this->getChallengedPlayer()->toJson(true),
             'challenger' => $this->getChallengerPlayer()->toJson(true),
+	    'winner' => ($this->getWinnerPlayer() == null ? null : $this->getWinnerPlayer()->toJson(true)),
             'state' => $this->getState(),
             'type' => $this->getType(),
             'value' => $this->getValue(),
