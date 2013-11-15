@@ -218,7 +218,7 @@ class ChallengeController extends Controller
         }
 
         //Player is challenger. Allow only to update to state 4 here
-        if($challenge->getChallengerPlayer()->getId() == $player->getId() && challenge->getState() != 4){
+        if($challenge->getChallengerPlayer()->getId() == $player->getId() && $challenge->getState() != 4){
             return $this->view(array('success' => 'false', 'errorMsg' => 'Challenger can not update a challenge to other but state 4'), 400);
         }
         //Player is not challenged one
