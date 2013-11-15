@@ -141,7 +141,7 @@ class ChallengeController extends Controller
             ->setParameter('challenger', $challenger)
             ->andWhere('c.challengedPlayer = :challenged')
             ->setParameter('challenged', $challenged)
-            ->andWhere('c.state != 4');
+            ->andWhere('c.state < 2');
 
         return $qb->getQuery()->getResult();
     }
@@ -227,6 +227,13 @@ class ChallengeController extends Controller
         }
 
         $challenge->setState($request->request->get("state"));
+
+        //state == 2 challenger won, state == 3 challenged won
+        if($challenge->getState() == 2)
+            $challenge->setWinnerPlayer(($challenge->getChallengerPlayer()));
+        else if($challenge->getState() == 3)
+            $challenge->setWinnerPlayer(($challenge->getChallengedPlayer()));
+
 
         return $this->processChallenge($challenge);
     }

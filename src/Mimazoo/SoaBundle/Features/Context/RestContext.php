@@ -470,7 +470,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     	
         if ((string)$this->_response->getStatusCode() !== $httpStatus) {
         	throw new \Exception('HTTP code does not match '.$httpStatus.
-        		' (actual: '.$this->_response->getStatusCode().')');
+        		' (actual: '.$this->_response->getStatusCode().') body:' . $this->_response->getBody(true));
         }
     }
 

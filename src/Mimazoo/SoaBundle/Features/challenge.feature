@@ -95,6 +95,13 @@ Scenario: Create a challenge
   When I request "/challenge/new"
   Then the response status code should be 204
 
+  #Just complete the challenge so it does not bother us later
+  Given that I want to update a "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBALDUv0CgFoUGbrZBenZCblI7A8W06ab6dmk7sZAZCGvnC0dOtS4hx515HbWUYvvmIzkoZAkxNh5mFJc6ZCQy2xsKvriXKCzxQS0BQW8OP9ISE5mrBWtnzPO2xtmY4ohwIhoIs566w96b6p5XT8GYXxI3plWIXcRbtfuAte50FZC"
+  And that its "state" is "2"
+  When I request "/challenges/3"
+  Then the response status code should be 204
+
 Scenario: Create a challenge
   Given that I want to make a new "Challenge"
   And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
@@ -113,6 +120,40 @@ Scenario: List challenges
   Then the response is JSON
   Then the "success" property equals "true" of type "string"
   Then the response data is an array that has "3" items
+
+Scenario: Allow creation of a new challenge only once the old one is completed
+  Given that I want to make a new "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  And that its "type" is "1"
+  And that its "value" is "500"
+  And that its "challenger_fbid" is "608899282"
+  And that its "challenged_fbid" is "100006480546572"
+  When I request "/challenge/new"
+  Then the response status code should be 204
+
+  Given that I want to make a new "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  And that its "type" is "1"
+  And that its "value" is "700"
+  And that its "challenger_fbid" is "608899282"
+  And that its "challenged_fbid" is "100006480546572"
+  When I request "/challenge/new"
+  Then the response status code should be 400
+
+  Given that I want to update a "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBALDUv0CgFoUGbrZBenZCblI7A8W06ab6dmk7sZAZCGvnC0dOtS4hx515HbWUYvvmIzkoZAkxNh5mFJc6ZCQy2xsKvriXKCzxQS0BQW8OP9ISE5mrBWtnzPO2xtmY4ohwIhoIs566w96b6p5XT8GYXxI3plWIXcRbtfuAte50FZC"
+  And that its "state" is "2"
+  When I request "/challenges/5"
+  Then the response status code should be 204
+
+  Given that I want to make a new "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  And that its "type" is "1"
+  And that its "value" is "700"
+  And that its "challenger_fbid" is "608899282"
+  And that its "challenged_fbid" is "100006480546572"
+  When I request "/challenge/new"
+  Then the response status code should be 204
 
 
 

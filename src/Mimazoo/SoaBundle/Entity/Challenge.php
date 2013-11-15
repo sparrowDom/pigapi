@@ -32,7 +32,7 @@ class Challenge extends BaseAuditableEntity
      * @Assert\Valid(traverse=false)
      * @ORM\JoinColumn(name="winner_id", referencedColumnName="id")
      */
-    protected $winner_id;
+    protected $winnerPlayer;
 
     /**
      * @var integer $reward
@@ -168,6 +168,30 @@ class Challenge extends BaseAuditableEntity
     {
         return $this->type;
     }
+
+    /**
+     * Set winnerPlayer
+     *
+     * @param \Mimazoo\SoaBundle\Entity\Player $winnerPlayer
+     * @return Challenge
+     */
+    public function setWinnerPlayer(\Mimazoo\SoaBundle\Entity\Player $winnerPlayer = null)
+    {
+        $this->winnerPlayer = $winnerPlayer;
+
+        return $this;
+    }
+
+    /**
+     * Get winnerPlayer
+     *
+     * @return \Mimazoo\SoaBundle\Entity\Player
+     */
+    public function getWinnerPlayer()
+    {
+        return $this->winnerPlayer;
+    }
+
 
     /**
      * Set challengerPlayer
