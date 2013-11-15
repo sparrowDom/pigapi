@@ -28,6 +28,13 @@ class Challenge extends BaseAuditableEntity
     protected $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Player")
+     * @Assert\Valid(traverse=false)
+     * @ORM\JoinColumn(name="winner_id", referencedColumnName="id")
+     */
+    protected $winner_id;
+
+    /**
      * @var integer $reward
      *
      * @ORM\Column(type="integer")
