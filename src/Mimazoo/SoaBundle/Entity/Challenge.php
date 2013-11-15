@@ -137,8 +137,8 @@ class Challenge extends BaseAuditableEntity
     public function toJson(){
 
         return array('id' => $this->getId(),
-            'challenger' => $this->getChallengedPlayer()->toJson(true),
-            'challenged' => $this->getChallengerPlayer()->toJson(true),
+            'challenged' => $this->getChallengedPlayer()->toJson(true),
+            'challenger' => $this->getChallengerPlayer()->toJson(true),
             'state' => $this->getState(),
             'type' => $this->getType(),
             'value' => $this->getValue(),

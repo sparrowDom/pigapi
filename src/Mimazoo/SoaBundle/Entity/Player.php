@@ -109,7 +109,7 @@ class Player extends BaseAuditableEntity
      * @Assert\NotBlank()
      * @Assert\Range(
      *               min = -1,
-     *               max = 15000,
+     *               max = 150000,
      *               minMessage = "Your distance should be a positive number or -1",
      *               maxMessage = "You ran more then 15000 meters? Who are you kidding?"
      * )
