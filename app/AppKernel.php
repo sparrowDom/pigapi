@@ -27,6 +27,7 @@ class AppKernel extends Kernel
         	new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
         	new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new FOS\FacebookBundle\FOSFacebookBundle(),
+            new RMS\PushNotificationsBundle\RMSPushNotificationsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

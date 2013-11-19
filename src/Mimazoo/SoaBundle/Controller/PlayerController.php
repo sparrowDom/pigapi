@@ -27,6 +27,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 use Symfony\Component\Translation\Tests\String;
+use RMS\PushNotificationsBundle\Message\iOSMessage;
 
 /**
  * Player controller
@@ -60,7 +61,6 @@ class PlayerController extends Controller
         if($player == null){
             return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
         }
-
 
         $response = $this->forward('MimazooSoaBundle:Player:get', array(
             'id'  => $player->getId(),
@@ -246,6 +246,7 @@ class PlayerController extends Controller
         if(true !== ($rsp = $this->handleIsAuthorised($player, $token))){
             return $rsp;
         }
+
 
         return array('success' => 'true', 'data' => array($player->toJson()));
     }

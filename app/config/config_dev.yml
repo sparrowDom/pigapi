@@ -12,6 +12,12 @@ web_profiler:
 parameters:
     database_name:     pigdb_dev
 
+rms_push_notifications:
+  ios:
+      sandbox: true
+      pem: "%kernel.root_dir%/certificates/pushCKDev.pem"
+      passphrase: sparrow5
+
 monolog:
     handlers:
         main:

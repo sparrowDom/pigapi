@@ -29,7 +29,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 use Symfony\Component\Translation\Tests\String;
-
+use RMS\PushNotificationsBundle\Message\iOSMessage;
 
 
 class ChallengeController extends Controller
@@ -274,6 +274,8 @@ class ChallengeController extends Controller
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($challenge);
+
+            $this->sendNotificationIfNecessary($challenge);
             try {
                 $em->flush();
             } catch (DBALException  $e) {
@@ -281,6 +283,43 @@ class ChallengeController extends Controller
                 return $this->view($e->getMessage(), 400);
             }
         }
+    }
+
+    protected function sendNotificationIfNecessary(Challenge $challenge){
+        //It is a new challenge
+        if($challenge->getState() == 0){
+            //If token present
+            if(strlen($challenge->getChallengedPlayer()->getApplePushToken()) > 5){
+                //limit is 100 characters
+                $message = new iOSMessage();
+                $maxNameLength = 30;
+                $message->setMessage(substr($challenge->getChallengerPlayer()->getName(), 0, $maxNameLength) . (strlen($challenge->getChallengerPlayer()->getName()) > $maxNameLength ? '...' : '') .
+                ' has challenged you to ' . ($challenge->getType() == 0 ?
+                    ("collect more than " . $challenge->getValue() . " coins!") :
+                    ("run further than " . $challenge->getValue() . " meters!")));
+                $message->setDeviceIdentifier(str_replace('%', '', $challenge->getChallengedPlayer()->getApplePushToken()));
+                $this->container->get('rms_push_notifications')->send($message);
+            }
+
+        }
+        //Challenge has been won or lost
+        else if($challenge->getState() == 2 || $challenge->getState() == 3){
+            //If token present
+            if(strlen($challenge->getChallengerPlayer()->getApplePushToken()) > 5){
+                //limit is 100 characters
+                $message = new iOSMessage();
+                $maxNameLength = 30;
+                $challengedPlayerName = substr($challenge->getChallengedPlayer()->getName(), 0, $maxNameLength) . (strlen($challenge->getChallengedPlayer()->getName()) > $maxNameLength ? '...' : '');
+
+                $message->setMessage($challenge->getState() == 2 ?
+                'You have WON a challenge against ' . $challengedPlayerName :
+                'you have LOST a challenge against ' . $challengedPlayerName);
+
+                $message->setDeviceIdentifier(str_replace('%', '', $challenge->getChallengerPlayer()->getApplePushToken()));
+                $this->container->get('rms_push_notifications')->send($message);
+            }
+        }
+
     }
 
 }
