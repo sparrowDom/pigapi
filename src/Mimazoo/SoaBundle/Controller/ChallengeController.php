@@ -150,7 +150,7 @@ class ChallengeController extends Controller
         if($type == 0)
             return $value * 1.5;
         else if ($type == 1)
-            return $value / 8;
+            return 50 + sqrt($value)* 2;
         else
             return 50;
     }
