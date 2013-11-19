@@ -312,8 +312,8 @@ class ChallengeController extends Controller
                 $challengedPlayerName = substr($challenge->getChallengedPlayer()->getName(), 0, $maxNameLength) . (strlen($challenge->getChallengedPlayer()->getName()) > $maxNameLength ? '...' : '');
 
                 $message->setMessage($challenge->getState() == 2 ?
-                'You have WON a challenge against ' . $challengedPlayerName :
-                'You have LOST a challenge against ' . $challengedPlayerName);
+                'You have WON a challenge against ' . $challengedPlayerName . ". Claim your reward!" :
+                'You have LOST a challenge against ' . $challengedPlayerName . ".");
 
                 $message->setDeviceIdentifier(str_replace('%', '', $challenge->getChallengerPlayer()->getApplePushToken()));
                 $this->container->get('rms_push_notifications')->send($message);
