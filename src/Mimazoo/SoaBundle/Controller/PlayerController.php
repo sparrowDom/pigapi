@@ -99,7 +99,7 @@ class PlayerController extends Controller
             if($topPlayer->getId() == $player->getId()){
                 $playerInResultSet = true;
             }
-            $players[] = $topPlayer->toJson(true, $count);
+            $players[] = $topPlayer->toJson(true, false, $count);
         }
 
         //Player not in top players list. Find and add him to the results
@@ -293,6 +293,11 @@ class PlayerController extends Controller
             }
         }
 
+        $pushToken = $request->request->get("apple_push_token");
+        if($pushToken != false){
+            $player->setApplePushToken(trim($pushToken));
+        }
+
         $present_id = $request->request->get("present_id");
         if($present_id != false){
             $present_id = intval($present_id);
@@ -324,7 +329,7 @@ class PlayerController extends Controller
             $distance = intval($distance);
             if($player->getDistanceBest() < $distance){
                 $player->setDistanceBest($distance);
-                return $this->processPlayer($player);
+                //return $this->processPlayer($player);
             }
         }
 
@@ -332,10 +337,11 @@ class PlayerController extends Controller
         if($present_id != false){
             $present_id = intval($present_id);
             $player->setPresentSelected($present_id);
-            return $this->processPlayer($player);
+            //return $this->processPlayer($player);
         }
 
 
+        return $this->processPlayer($player);
     }
 
 
@@ -393,7 +399,6 @@ class PlayerController extends Controller
         if (count($errors) > 0) {
             return $this->view($errors, 400);
         } else {
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($player);
             try {

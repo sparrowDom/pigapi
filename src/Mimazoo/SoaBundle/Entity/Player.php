@@ -381,7 +381,7 @@ class Player extends BaseAuditableEntity
         $this->friends->removeElement($friends);
     }
 
-    public function toJson($isPublicView = false, $includedRank = -1){
+    public function toJson($isPublicView = false, $showFriends = true, $includedRank = -1){
         $player = array('id' => $this->getId(),
                         'name' => $this->getName(),
                         'firstName' => $this->getFirstName(),
@@ -391,10 +391,14 @@ class Player extends BaseAuditableEntity
                         'distance' => $this->getDistanceBest()
         );
 
+        if(!$isPublicView){
+            $player['apple_push_token'] = $this->getApplePushToken();
+        }
+
         if($includedRank != -1)
             $player['rank'] = $includedRank;
 
-        if(!$isPublicView){
+        if($showFriends){
             $friends = array();
             foreach($this->getFriends() as $friend){
                 $friends[] = array('id' => $friend->getId(),

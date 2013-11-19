@@ -254,7 +254,7 @@ class ChallengeController extends Controller
             return $rsp;
         }
 
-        return array('success' => 'true', 'data' => array($player->toJson()));
+        return array('success' => 'true', 'data' => array($player->toJson(true, false)));
     }
 
     /**

@@ -25,7 +25,7 @@ Scenario: Trying to get player's details for a not existing player
     Then the response is JSON
     Then the response status code should be 404
     Then the "status" property equals "error" of type "string"
-    
+
 #Scenario: Add new player
 #    Given that I want to make a new "Player"
 #    And that its "fbId" is "620310212"
@@ -36,11 +36,11 @@ Scenario: Trying to get player's details for a not existing player
 #    And that its "challengesCounter" is "1"
 #    When I request "/players"
 #    Then the response status code should be 201
-    
+
 Scenario: Update player
     Given that I want to update a "Player"
     And that its "distance" is "100"
-    And that its "present_id" is "2"
+    And that its "present_id" is "3"
     And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
     When I request "/players/2"
     Then the response status code should be 204
@@ -49,8 +49,22 @@ Scenario: Update player
     And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
     When I request "/players/2"
     Then the response status code should be 200
-    Then the "present_id" data property equals "2" of type "int"
+    Then the "present_id" data property equals "3" of type "int"
     Then the "distance" data property equals "100" of type "int"
+
+
+Scenario: Update apple push token
+    Given that I want to update a "Player"
+    And that its "apple_push_token" is "XXXXX-XXXXX-XXXXX-XXXXX"
+    And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+    When I request "/players/2"
+    Then the response status code should be 204
+
+    Given that I want to find a "Player"
+    And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+    When I request "/players/2"
+    Then the response status code should be 200
+    Then the "apple_push_token" data property equals "XXXXX-XXXXX-XXXXX-XXXXX" of type "string"
 
 Scenario: Update with smaller distance
     Given that I want to update a "Player"
@@ -83,12 +97,12 @@ Scenario: Trying to update a player without a token. Should be a forbidden resou
     And that its "distanceBest" is "106"
     When I request "/players/2"
     Then the response status code should be 403
-    
+
 Scenario: Trying to update a player that does not exist
     Given that I want to update a "Player"
     When I request "/players/99999"
     Then the response status code should be 404
-    
+
 Scenario: Trying to patch update a not whitelisted field
     Given that I want to update a "Player"
     And that its "foo" is "bar"
