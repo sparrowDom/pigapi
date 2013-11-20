@@ -254,8 +254,6 @@ class PlayerController extends Controller
      */
     public function getAction($id, Player $player)
     {
-        $this->container->get('logger')->info('Local variables', get_defined_vars());
-
         $token = $this->getRequest()->query->get('token');
         if(true !== ($rsp = $this->handleIsAuthorised($player, $token))){
             return $rsp;
