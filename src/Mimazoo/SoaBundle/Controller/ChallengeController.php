@@ -300,6 +300,8 @@ class ChallengeController extends Controller
                 $message->setAPSSound("default");
                 $message->setDeviceIdentifier(str_replace('%', '', $challenge->getChallengedPlayer()->getApplePushToken()));
                 $this->container->get('rms_push_notifications')->send($message);
+
+                $this->container->get('logger')->info('Notifying player id: ' . $challenge->getChallengedPlayer()->getId() . " that his friend id: " . $challenge->getChallengerPlayer()->getId() . " has started a new challenge id : " . $challenge->getId() , get_defined_vars());
             }
 
         }
@@ -315,9 +317,11 @@ class ChallengeController extends Controller
                 $message->setMessage($challenge->getState() == 2 ?
                 'You have WON a challenge against ' . $challengedPlayerName . ". Claim your reward!" :
                 'You have LOST a challenge against ' . $challengedPlayerName . ".");
-
+                $message->setAPSSound("default");
                 $message->setDeviceIdentifier(str_replace('%', '', $challenge->getChallengerPlayer()->getApplePushToken()));
                 $this->container->get('rms_push_notifications')->send($message);
+
+                $this->container->get('logger')->info('Notifying player id: ' . $challenge->getChallengerPlayer()->getId() . " that his friend id: " . $challenge->getChallengerPlayer()->getId() . " has " . ($challenge->getState() == 2 ? "lost" : "won") . "  a challenge id : " . $challenge->getId(), get_defined_vars());
             }
         }
 

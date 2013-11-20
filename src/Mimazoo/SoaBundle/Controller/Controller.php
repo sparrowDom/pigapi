@@ -2,6 +2,7 @@
 
 namespace Mimazoo\SoaBundle\Controller;
 
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
 
 use FOS\RestBundle\Controller\FOSRestController;
@@ -48,6 +49,13 @@ class Controller extends FOSRestController implements ClassResourceInterface
 	 * @var array
 	 */
 	protected $pagingParams;
+
+    /**
+     * Default logger
+     *
+     * @var Logger
+     */
+    protected $logger;
 	
 	
 	/**
@@ -58,7 +66,17 @@ class Controller extends FOSRestController implements ClassResourceInterface
 	protected $wildcardParams = array();
 
 	const EXPAND_PARAM_NAME = 'expand';
-	
+
+    /**
+     * * @return Logger
+     */
+    protected function getLogger(){
+        if($this->logger == null)
+            $this->logger = $this->get('logger');
+
+        return $this->logger;
+    }
+
 	/**
 	 * Paginate query results using knp paginator bundle
 	 * 
@@ -547,6 +565,7 @@ class Controller extends FOSRestController implements ClassResourceInterface
 		Hal::setExpandOptions($this->getExpandOptionsFromMetadata());
 		
 		$this->setWildcardParams();
+
 	}
 	
 	public function getExpandOptionsFromMetadata(){

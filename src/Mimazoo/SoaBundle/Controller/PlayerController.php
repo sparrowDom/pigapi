@@ -186,6 +186,8 @@ class PlayerController extends Controller
             return $this->handleFacebookApiError($e, $facebook, $token);
         }
 
+        $this->getLogger()->info("User logged in id:" . $currentPlayer->getId());
+
         $json = array('success' => 'true', 'access_token' => $facebook->GetAccessToken());
 
         if(is_object($currentPlayer))
@@ -209,7 +211,19 @@ class PlayerController extends Controller
     }
 
     protected function notifyNewFriendPlaying($oldPlayer, $newPlayer){
+        if(strlen($oldPlayer->getApplePushToken()) > 5){
+            //limit is 100 characters
+            $message = new iOSMessage();
+            $maxNameLength = 30;
+            $message->setMessage("Your friend " . substr($newPlayer->getName(), 0, $maxNameLength) . (strlen($newPlayer->getName()) > $maxNameLength ? '...' : '') .
+            ' has started playing the game. Challenge him!');
 
+            $message->setAPSSound("default");
+            $message->setDeviceIdentifier(str_replace('%', '', $oldPlayer->getApplePushToken()));
+            $this->container->get('rms_push_notifications')->send($message);
+
+            $this->container->get('logger')->info('Notifying player id: ' . $oldPlayer->getId() . " that his friend id: " . $newPlayer->getId() . " has started playing the game" , get_defined_vars());
+        }
     }
 
     protected function getFriends($facebookFriends){
@@ -290,6 +304,7 @@ class PlayerController extends Controller
             $distance = intval($distance);
             if($player->getDistanceBest() < $distance){
                 $player->setDistanceBest($distance);
+                $this->getLogger()->info("Updating player distance id: " . $player->getId());
                 //return $this->processPlayer($player);
             }
         }
@@ -297,12 +312,14 @@ class PlayerController extends Controller
         $pushToken = $request->request->get("apple_push_token");
         if($pushToken != false){
             $player->setApplePushToken(trim($pushToken));
+            $this->getLogger()->info("Updating player push token id: " . $player->getId());
         }
 
         $present_id = $request->request->get("present_id");
         if($present_id != false){
             $present_id = intval($present_id);
             $player->setPresentSelected($present_id);
+            $this->getLogger()->info("Updating player present_id id: " . $player->getId());
             //return $this->processPlayer($player);
         }
 
@@ -341,6 +358,7 @@ class PlayerController extends Controller
             //return $this->processPlayer($player);
         }
 
+        $this->getLogger()->info("Updating player id: " . $player->getId());
 
         return $this->processPlayer($player);
     }
@@ -379,6 +397,8 @@ class PlayerController extends Controller
             $player->setFbAccessToken($facebook->getAccessToken());
             $em->persist($player);
             $em->flush();
+
+            $this->getLogger()->info("Updating token information for player id: " . $player->getId());
             return $player;
         }
 
