@@ -297,6 +297,7 @@ class ChallengeController extends Controller
                 ' has challenged you to ' . ($challenge->getType() == 0 ?
                     ("collect more than " . $challenge->getValue() . " coins!") :
                     ("run further than " . $challenge->getValue() . " meters!")));
+                $message->setAPSSound("default");
                 $message->setDeviceIdentifier(str_replace('%', '', $challenge->getChallengedPlayer()->getApplePushToken()));
                 $this->container->get('rms_push_notifications')->send($message);
             }
