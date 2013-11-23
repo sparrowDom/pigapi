@@ -113,7 +113,7 @@ Scenario: Trying to patch update a not whitelisted field
 Scenario: Log in one user
   Given that I want to find a "Player"
   #Ta token potece cez okrog 1.10.2013
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBALDVZBIRM3wsomk9PwuNJ34P00YAhHwfAG36mh3tIm5zGHAH9Skx9VrGwPvoIKf2Ok4G2SPRtmap6P3hBkgISLTmFVIKkEZAN0A9ZBdlgZBtZCZC6en80F6BrWZAgKCAwAJ84ISEnTAfjh552Gb3ub4VvCaB8sc53ONm3JeHIqYFDPRt93BJ0UZD"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAH6plzuumTINrLTero5hGjdF2fFyokoIbj0Dploi7E5wIzJHjVf95jOlTxZBVCEpe9BOXzZAZAPuaJHYZB0rHmEqZASuF4RA3XmKD5enuYT0P14SIXuVGCRQTeRTqy4ghs03z85JshNplXGrHEZCS7NLIfgczDjx4zJDOO3T1ZB78EE6ZAI04foZD"
   When I request "/players/login"
   Then the response is JSON
   Then the response status code should be 200
@@ -122,10 +122,10 @@ Scenario: Log in one user
   Then store the response "access_token" property as new token
 
   Given that I want to find a "Player"
-  When I request "/players/5"
+  When I request "/players/7"
   Then the response status code should be 200
   Then the "success" property equals "true" of type "string"
-  Then the "id" data property equals "5" of type "int"
+  Then the "id" data property equals "7" of type "int"
   Then the "name" data property equals "Tom Amfdeaeaahec Yangsky" of type "string"
   Then the "firstName" data property equals "Tom" of type "string"
   Then the "lastName" data property equals "Yangsky" of type "string"
@@ -145,10 +145,10 @@ Scenario: Log in one user
   Then store the response "access_token" property as new token
 
   Given that I want to find a "Player"
-  When I request "/players/6"
+  When I request "/players/8"
   Then the response status code should be 200
   Then the "success" property equals "true" of type "string"
-  Then the "id" data property equals "6" of type "int"
+  Then the "id" data property equals "8" of type "int"
   Then the "name" data property equals "Karen Amfdbdjfcdej Letuchystein" of type "string"
   Then the "firstName" data property equals "Karen" of type "string"
   Then the "lastName" data property equals "Letuchystein" of type "string"
@@ -164,7 +164,7 @@ Scenario: Browse highscores
   When I request "/players/highscores/alltime"
   Then the response is JSON
   Then the "success" property equals "true" of type "string"
-  Then the response data is an array that has "6" items
+  Then the response data is an array that has "8" items
 
 
 #  Given that I want to find a "Player"

@@ -155,6 +155,35 @@ Scenario: Allow creation of a new challenge only once the old one is completed
   When I request "/challenge/new"
   Then the response status code should be 204
 
+Scenario: Create a random challenge
+  Given that I want to make a new "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  And that its "type" is "0"
+  And that its "value" is "122"
+  When I request "/challenge/new/random"
+  Then the response status code should be 200
+  Then the response is JSON
+  Then the response data has a "id" property
+  Then the response data has a "name" property
+  Then the response data has a "firstName" property
+  Then the response data has a "lastName" property
+  Then the response data has a "fb_id" property
+  Then the response data has a "distance" property
+
+Scenario: Create a random challenge missing value
+  Given that I want to make a new "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  And that its "type" is "0"
+  When I request "/challenge/new/random"
+  Then the response status code should be 400
+
+Scenario: Create a random challenge missing type
+  Given that I want to make a new "Challenge"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  And that its "value" is "122"
+  When I request "/challenge/new/random"
+  Then the response status code should be 400
+
 
 
 

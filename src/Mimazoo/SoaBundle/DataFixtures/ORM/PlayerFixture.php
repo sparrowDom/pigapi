@@ -57,6 +57,26 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['joe']->setDistanceBest(-1);
         $players['joe']->setPresentSelected(1);
 
+        $players['mike'] = new Player();
+        $players['mike']->setFbId('100006469538852');
+        $players['mike']->setFbAccessToken('CAAFM6NnZBvQoBAEUbLlTduIwrWDpTVStKGTLgZAU2nmXamJrgmaZA3R4H2YCGtvO1QEZAvQyfZAXilnEX6ie1q5lpD56aXWTnW7N5N5WiSpqzf9KDZCZA3hLSEGvZBGhqUBYQFCJEuchs58Mr6LsYbtCrvyOEZBBHfIrR8Rkf6hKgmOqhLfrV8wlhByRCqJWph9wZD');
+        $players['mike']->setSlug('mikey-mike');
+        $players['mike']->setName('Mike Amfdfiechheb Letuchyescu');
+        $players['mike']->setSurname('Letuchyescu');
+        $players['mike']->setFirstName('Mike');
+        $players['mike']->setDistanceBest(-1);
+        $players['mike']->setPresentSelected(1);
+
+        $players['donna'] = new Player();
+        $players['donna']->setFbId('100006480426530');
+        $players['donna']->setFbAccessToken('CAAFM6NnZBvQoBAFnyLOrSY66i7bZCu2eUX3SsS9s9X7NzRg0VUt22fx2sZCMYJt4ksSyl7rBmmICbK0WSTHZA0okswOJB4FlKh6sV4ZBnFQqDGRMr7cWNAiiIiK6TqHbXHriwFsUkeLoJ3MHx6qriH12LULvwVKPoUMgPjcCH07mZAcb99nAnvicQuPIzddcIZD');
+        $players['donna']->setSlug('tommy-tom');
+        $players['donna']->setName('Donna Amfdhjdbfecj Chengescumansteins');
+        $players['donna']->setSurname('Chengescumansteins');
+        $players['donna']->setFirstName('Donna');
+        $players['donna']->setDistanceBest(-1);
+        $players['donna']->setPresentSelected(1);
+
 		foreach ($players as $key => $player) {
 			$manager->persist($player);
 			$manager->flush();

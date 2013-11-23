@@ -105,6 +105,13 @@ class ChallengeController extends Controller
         return $repository->findOneByFbId($fbId);
     }
 
+    protected function GetPlayerById($id){
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:Player');
+
+        return $repository->findOneById($id);
+    }
+
 
     /**
      * @param Player $challenger
@@ -153,6 +160,66 @@ class ChallengeController extends Controller
             return 50 + sqrt($value)* 2;
         else
             return 50;
+    }
+
+    /**
+     * @View(statusCode="200")
+     */
+    public function postNewRandomAction(Request $request){
+        /**
+         * @var Player
+         */
+        $player = $this->GetPlayerByToken($request);
+
+        if($player == null){
+            return $this->view(array('success' => 'false', 'errorMsg' => 'Token invalid'), 400);
+        }
+
+        $stmt = $this->getDoctrine()->getEntityManager()
+            ->getConnection()
+            ->prepare('SELECT * FROM player WHERE id NOT IN
+                      (SELECT a.id FROM ((select c1.challenger_id as id from challenge c1 where c1.challenged_id = :id AND c1.state < 2) UNION
+                      (select c.challenged_id as id from challenge c where c.challenger_id = :id AND c.state < 2)) AS a)
+                      AND ID != :id ORDER BY RAND() LIMIT 1');
+        $stmt->bindValue("id", $player->getId());
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+
+
+        if(count($result) == 1){
+            $opponent = $result[0];
+
+            $challenge = new Challenge();
+            $challenge->setChallengedPlayer($this->GetPlayerById($opponent['id']));
+            $challenge->setChallengerPlayer($this->GetPlayerById($player->GetId()));
+            $challenge->setState(0);
+            $type = $request->request->get("type");
+            $value = $request->request->get("value");
+            $challenge->setType($type);
+            $challenge->setValue($value);
+            $challenge->setReward(ChallengeController::GetRewardFromTypeAndValue($type, $value));
+            /**
+             * @var \FOS\RestBundle\View\View
+             */
+            $view = $this->processChallenge($challenge);
+
+            //Errors have happened when trying to validate challenge
+            if($view != null)
+                return $view;
+
+            //Looks like the new challenge was created successfully
+            return array('success' => 'true', 'data' => array(array(
+                'id' => $opponent['id'],
+                'name' => $opponent['name'],
+                'firstName' => $opponent['first_name'],
+                'lastName' => $opponent['surname'],
+                'fb_id' => $opponent['fb_id'],
+                'distance' => $opponent['id']
+            )));
+        }
+
+        return array('success' => 'false', 'error' => 5, 'errorMsg' => 'We could not find any challenges for you at this moment');
     }
 
     /**
