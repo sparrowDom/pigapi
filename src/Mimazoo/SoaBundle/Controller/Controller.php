@@ -17,6 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Form;
 use Doctrine\ORM\Query;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Mimazoo\SoaBundle\Entity\Entity;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;

@@ -28,6 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 use Symfony\Component\Translation\Tests\String;
 use RMS\PushNotificationsBundle\Message\iOSMessage;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Player controller
@@ -204,7 +205,34 @@ class PlayerController extends Controller
         foreach($facebookFriends as $friend){
             $friend->addFriend($newPlayer);
             $em->persist($friend);
+
+            /*
+            $pid = pcntl_fork();
+            $this->getLogger()->info("FU");
+            if ($pid == -1) {
+                $this->getLogger()->err("could not fork");
+            } else if ($pid) {
+                // we are the parent
+                $this->getLogger()->info("waiting for children to finish: " . pcntl_waitpid($pid, $status, WNOHANG OR WUNTRACED));
+                while(pcntl_waitpid($pid, $status, WNOHANG OR WUNTRACED) > 0) {
+                    $this->getLogger()->info("still not finished");
+                    usleep(500);
+                }
+                $this->getLogger()->info("children finished notifying friends child pid: " . $pid);
+                posix_kill($pid, 0);
+                $this->notifyNewFriendPlaying($friend, $newPlayer);
+                $this->getLogger()->info("exiting");
+                die();
+
+            } else {
+                $this->getLogger()->info("CHILD BEFORE PID:" . getmypid());
+                sleep(5);
+                $this->getLogger()->info("CHILD AFTER");
+                // we are the child
+            }
+            */
             $this->notifyNewFriendPlaying($friend, $newPlayer);
+
         }
         $em->flush();
         return true;

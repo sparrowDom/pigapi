@@ -342,7 +342,18 @@ class ChallengeController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($challenge);
 
+            /*
+            $pid = pcntl_fork();
+            if ($pid == -1) {
+                die('could not fork');
+            } else if ($pid) {
+
+            } else {
+                $this->sendNotificationIfNecessary($challenge);
+            }
+            */
             $this->sendNotificationIfNecessary($challenge);
+
             try {
                 $em->flush();
             } catch (DBALException  $e) {

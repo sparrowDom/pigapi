@@ -275,7 +275,6 @@ class RestContext extends BehatContext implements KernelAwareInterface
     public function theResponseIsJson()
     {
         $data = json_decode($this->_response->getBody(true));
-
         if (empty($data)) {
             throw new \Exception("Response was not JSON\n" . $this->_response);
         }
