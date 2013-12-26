@@ -113,7 +113,7 @@ Scenario: Trying to patch update a not whitelisted field
 Scenario: Log in one user
   Given that I want to find a "Player"
   #Ta token potece cez okrog 1.10.2013
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAH6plzuumTINrLTero5hGjdF2fFyokoIbj0Dploi7E5wIzJHjVf95jOlTxZBVCEpe9BOXzZAZAPuaJHYZB0rHmEqZASuF4RA3XmKD5enuYT0P14SIXuVGCRQTeRTqy4ghs03z85JshNplXGrHEZCS7NLIfgczDjx4zJDOO3T1ZB78EE6ZAI04foZD"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBADWskTAmteSB3FaVEmZArkvQzP5OJxmz617XJStwJ9ZAU4EaZAWQaUo5JnQwFmrz7Lfa1683qU8kiMdeOxMIkPhdAZCFsWB7GZCqF47s4UtMLCKFZAa9Jz6DsQPI73qJHALnEchHzBDU6xzNo6P45izXVdsbHqZCNZBu7Vs8iIyaYGUODHcOxMgZD"
   When I request "/players/login"
   Then the response is JSON
   Then the response status code should be 200
@@ -136,7 +136,7 @@ Scenario: Log in one user
   Then the response data has an array property "friends" of length "1"
 
   #Ta token potece cez okrog 1.12.2013
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAF27L7I1BHZCx3D0p6EUjPeeZBAv9BQeGZBn72NyhKdFRrix32RCKuQZAiOufvzS0lmvPxvZBcNHaTtx82JPPof5Q06j7MmcWvRvAguZB5ZB7eTMQ9dmRyea878HMqpD1impjsxWmZBooOJfw7GbnOHevxlG4hQZCsMNdSxji4P5MOyLGTrWWXAIZD"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAN4KBDah47KVZBZBWKNHdYmYIsDVIDe0v6YA5iqtzkn8JItZAaLc8zRS2nnp8IJHjF2szVLpqQPIZB2yJ260EXQykni3KdHpq0g16wQwBbsTgvdgvZCyW8SwZBONfFEv8eyBL9FgnewLGnowjc4OryJ7uY2NZB4tSoKvZAeUN3NIozZBNnWj5I4cZD"
   When I request "/players/login"
   Then the response is JSON
   Then the response status code should be 200

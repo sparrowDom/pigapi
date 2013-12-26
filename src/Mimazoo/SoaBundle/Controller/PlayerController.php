@@ -319,6 +319,7 @@ class PlayerController extends Controller
      */
     public function postAction(Player $player)
     {
+
         $request = $this->getRequest();
         $token = $request->query->get('token');
         if(true !== ($rsp = $this->handleIsAuthorised($player, $token))){
@@ -329,6 +330,8 @@ class PlayerController extends Controller
         if($distance != false){
             $distance = intval($distance);
             if($player->getDistanceBest() < $distance){
+                $previousDistanceBest = $player->getDistanceBest();
+                $this->checkIfBeatenHighscoreOfFriends($player, $previousDistanceBest, $distance);
                 $player->setDistanceBest($distance);
                 $this->getLogger()->info("Updating player distance id: " . $player->getId());
                 //return $this->processPlayer($player);
@@ -372,6 +375,8 @@ class PlayerController extends Controller
         if($distance != false){
             $distance = intval($distance);
             if($player->getDistanceBest() < $distance){
+                $previousDistanceBest = $player->getDistanceBest();
+                $this->checkIfBeatenHighscoreOfFriends($player, $previousDistanceBest, $distance);
                 $player->setDistanceBest($distance);
                 //return $this->processPlayer($player);
             }
@@ -385,10 +390,26 @@ class PlayerController extends Controller
         }
 
         $this->getLogger()->info("Updating player id: " . $player->getId());
-
         return $this->processPlayer($player);
     }
 
+    private function checkIfBeatenHighscoreOfFriends(Player $player, $previousDistanceBest, $newDistanceBest){
+        foreach($player->getFriends() as $friend){
+            if($friend->getDistanceBest() >= $previousDistanceBest &&
+               $friend->getDistanceBest() < $newDistanceBest &&
+                strlen($friend->getApplePushToken()) > 0){
+
+                $message = new iOSMessage();
+                $maxNameLength = 30;
+                $message->setMessage("Your friend " . substr($player->getName(), 0, $maxNameLength) . (strlen($player->getName()) > $maxNameLength ? '...' : '') .
+                ' has beaten your high-score!');
+
+                $message->setAPSSound("default");
+                $message->setDeviceIdentifier(str_replace('%', '', $friend->getApplePushToken()));
+                $this->container->get('rms_push_notifications')->send($message);
+            }
+        }
+    }
 
     /**
      * @View(statusCode="204")
@@ -446,6 +467,8 @@ class PlayerController extends Controller
         if (count($errors) > 0) {
             return $this->view($errors, 400);
         } else {
+
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($player);
             try {
