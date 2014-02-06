@@ -5,3 +5,11 @@ player:
 challenge:
     type:     rest
     resource: Mimazoo\SoaBundle\Controller\ChallengeController
+
+notification:
+    type:     rest
+    resource: Mimazoo\SoaBundle\Controller\NotificationController
+
+userStatistics:
+    type:     rest
+    resource: Mimazoo\SoaBundle\Controller\UserStatisticsController

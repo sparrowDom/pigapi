@@ -57,7 +57,7 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $applePushToken
      *
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
      * @Groups({"always"})
      */
     protected $applePushToken;
@@ -109,9 +109,9 @@ class Player extends BaseAuditableEntity
      * @Assert\NotBlank()
      * @Assert\Range(
      *               min = -1,
-     *               max = 150000,
+     *               max = 350000,
      *               minMessage = "Your distance should be a positive number or -1",
-     *               maxMessage = "You ran more then 15000 meters? Who are you kidding?"
+     *               maxMessage = "You ran more then 350000 meters? Who are you kidding?"
      * )
      * @Groups({"always"})
      */

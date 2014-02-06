@@ -368,7 +368,7 @@ class PlayerController extends Controller
         $player = $repository->findOneByFbAccessToken($token);
 
         if($player == null){
-            return $this->view(array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid'), 400);
+            return $this->view(array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid'), $token);
         }
 
         $distance = $request->request->get("distance");
