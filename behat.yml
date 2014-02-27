@@ -1,7 +1,7 @@
 default:
     context:
         parameters:
-            base_url: http://api.dev.wolfandswine.com/app_test.php
+            base_url: http://api.wolfandswine.com/app_test.php
     extensions:
         Behat\Symfony2Extension\Extension:
             bundle: MimazooSoaBundle

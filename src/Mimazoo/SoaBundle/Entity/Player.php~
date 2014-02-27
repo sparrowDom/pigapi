@@ -109,7 +109,7 @@ class Player extends BaseAuditableEntity
      * @Assert\NotBlank()
      * @Assert\Range(
      *               min = -1,
-     *               max = 15000,
+     *               max = 150000,
      *               minMessage = "Your distance should be a positive number or -1",
      *               maxMessage = "You ran more then 15000 meters? Who are you kidding?"
      * )
@@ -381,7 +381,7 @@ class Player extends BaseAuditableEntity
         $this->friends->removeElement($friends);
     }
 
-    public function toJson($isPublicView = false){
+    public function toJson($isPublicView = false, $showFriends = true, $includedRank = -1){
         $player = array('id' => $this->getId(),
                         'name' => $this->getName(),
                         'firstName' => $this->getFirstName(),
@@ -392,6 +392,13 @@ class Player extends BaseAuditableEntity
         );
 
         if(!$isPublicView){
+            $player['apple_push_token'] = $this->getApplePushToken();
+        }
+
+        if($includedRank != -1)
+            $player['rank'] = $includedRank;
+
+        if($showFriends){
             $friends = array();
             foreach($this->getFriends() as $friend){
                 $friends[] = array('id' => $friend->getId(),

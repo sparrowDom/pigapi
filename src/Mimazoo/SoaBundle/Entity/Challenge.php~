@@ -28,6 +28,13 @@ class Challenge extends BaseAuditableEntity
     protected $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Player")
+     * @Assert\Valid(traverse=false)
+     * @ORM\JoinColumn(name="winner_id", referencedColumnName="id")
+     */
+    protected $winnerPlayer;
+
+    /**
      * @var integer $reward
      *
      * @ORM\Column(type="integer")
@@ -130,8 +137,9 @@ class Challenge extends BaseAuditableEntity
     public function toJson(){
 
         return array('id' => $this->getId(),
-            'challenger' => $this->getChallengedPlayer()->toJson(true),
-            'challenged' => $this->getChallengerPlayer()->toJson(true),
+            'challenged' => $this->getChallengedPlayer()->toJson(true, false),
+            'challenger' => $this->getChallengerPlayer()->toJson(true, false),
+	        'winner' => ($this->getWinnerPlayer() == null ? null : $this->getWinnerPlayer()->toJson(true, false)),
             'state' => $this->getState(),
             'type' => $this->getType(),
             'value' => $this->getValue(),
@@ -161,6 +169,30 @@ class Challenge extends BaseAuditableEntity
     {
         return $this->type;
     }
+
+    /**
+     * Set winnerPlayer
+     *
+     * @param \Mimazoo\SoaBundle\Entity\Player $winnerPlayer
+     * @return Challenge
+     */
+    public function setWinnerPlayer(\Mimazoo\SoaBundle\Entity\Player $winnerPlayer = null)
+    {
+        $this->winnerPlayer = $winnerPlayer;
+
+        return $this;
+    }
+
+    /**
+     * Get winnerPlayer
+     *
+     * @return \Mimazoo\SoaBundle\Entity\Player
+     */
+    public function getWinnerPlayer()
+    {
+        return $this->winnerPlayer;
+    }
+
 
     /**
      * Set challengerPlayer

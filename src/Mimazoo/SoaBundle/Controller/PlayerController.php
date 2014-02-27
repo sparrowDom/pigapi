@@ -162,7 +162,7 @@ class PlayerController extends Controller
                     $player->setFbId($fbResult['id']);
                     $player->setFbAccessToken($facebook->getAccessToken());
                     $player->setSlug(mb_strtolower(str_replace(' ', '_', $fbResult['name'])));
-                    $player->setDistanceBest(-1);
+                    $player->setDistanceBest(0);
                     $player->setPresentSelected(0);
 
                     $friends = $this->getFriends($fbResult['friends']);

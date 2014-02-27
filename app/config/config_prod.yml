@@ -11,6 +11,12 @@ framework:
     #validation:
     #    cache: apc
     
+rms_push_notifications:
+  ios:
+      sandbox: true
+      pem: "%kernel.root_dir%/certificates/pushCKDev.pem"
+      passphrase: sparrow5
+
 parameters:
     database_name:     pigdb_prod
     
