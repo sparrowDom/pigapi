@@ -294,7 +294,7 @@ class PlayerController extends Controller
     /**
      * @View(statusCode="200")
      */
-    public function testAction()
+    public function testingAction(Request $request){
     {
         $token = $this->getRequest()->query->get('token');
 
