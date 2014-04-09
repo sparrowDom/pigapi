@@ -291,29 +291,6 @@ class PlayerController extends Controller
         return array('success' => 'true', 'data' => array($player->toJson()));
     }
 
-    /**
-     * @View(statusCode="200")
-     */
-    public function testingAction(Request $request){
-    {
-        $token = $this->getRequest()->query->get('token');
-
-        $repository = $this->getDoctrine()
-            ->getRepository('MimazooSoaBundle:Player');
-
-        /* @var $player \Mimazoo\SoaBundle\Entity\Player */
-        $player = $repository->findOneByFbAccessToken($token);
-
-        $message = new iOSMessage();
-        $maxNameLength = 30;
-        $message->setMessage("TEST");
-        $message->setAPSSound("default");
-        $message->setDeviceIdentifier(str_replace('%', '', $player->getApplePushToken()));
-        $this->container->get('rms_push_notifications')->send($message);
-
-        return array('success' => 'true', 'data' => "Nothing");
-    }
-
     /*
      * I guess we could expand this sometime in the future
      */

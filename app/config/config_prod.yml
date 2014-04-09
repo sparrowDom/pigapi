@@ -13,9 +13,8 @@ framework:
     
 rms_push_notifications:
   ios:
-      sandbox: true
       pem: "%kernel.root_dir%/certificates/pushCKProd.pem"
-      passphrase:
+      passphrase: sparrow5
 
 parameters:
     database_name:     pigdb_prod
