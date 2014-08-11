@@ -25,7 +25,6 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['mitja']->setSurname('Poljšak');
         $players['mitja']->setFirstName('Mitja');
 		$players['mitja']->setDistanceBest(-1);
-        $players['mitja']->setPresentSelected(1);
 
         $players['domen'] = new Player();
         $players['domen']->setFbId('608899282');
@@ -35,7 +34,6 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['domen']->setSurname('Grabec');
         $players['domen']->setFirstName('Domen');
         $players['domen']->setDistanceBest(-1);
-        $players['domen']->setPresentSelected(1);
 
         $players['rick'] = new Player();
         $players['rick']->setFbId('100006462098682');
@@ -45,7 +43,6 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['rick']->setSurname('Wongsly');
         $players['rick']->setFirstName('Rick');
         $players['rick']->setDistanceBest(-1);
-        $players['rick']->setPresentSelected(1);
 
         $players['joe'] = new Player();
         $players['joe']->setFbId('100006480546572');
@@ -55,7 +52,6 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['joe']->setSurname('Letuchysky');
         $players['joe']->setFirstName('Joe');
         $players['joe']->setDistanceBest(-1);
-        $players['joe']->setPresentSelected(1);
 
         $players['mike'] = new Player();
         $players['mike']->setFbId('100006469538852');
@@ -65,7 +61,6 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['mike']->setSurname('Letuchyescu');
         $players['mike']->setFirstName('Mike');
         $players['mike']->setDistanceBest(-1);
-        $players['mike']->setPresentSelected(1);
 
         $players['donna'] = new Player();
         $players['donna']->setFbId('100006480426530');
@@ -75,7 +70,6 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['donna']->setSurname('Chengescumansteins');
         $players['donna']->setFirstName('Donna');
         $players['donna']->setDistanceBest(-1);
-        $players['donna']->setPresentSelected(1);
 
 		foreach ($players as $key => $player) {
 			$manager->persist($player);

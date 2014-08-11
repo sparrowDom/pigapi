@@ -16,7 +16,6 @@ Scenario: List one player
     Then the "lastName" data property equals "Grabec" of type "string"
     Then the "fb_id" data property equals "608899282" of type "string"
     Then the response data has a "distance" property
-    Then the response data has a "present_id" property
     Then the response data has a "friends" property
 
 Scenario: Trying to get player's details for a not existing player
@@ -40,7 +39,6 @@ Scenario: Trying to get player's details for a not existing player
 Scenario: Update player
     Given that I want to update a "Player"
     And that its "distance" is "100"
-    And that its "present_id" is "3"
     And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
     When I request "/players/2"
     Then the response status code should be 204
@@ -49,7 +47,6 @@ Scenario: Update player
     And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
     When I request "/players/2"
     Then the response status code should be 200
-    Then the "present_id" data property equals "3" of type "int"
     Then the "distance" data property equals "100" of type "int"
 
 
@@ -85,13 +82,6 @@ Scenario: Update with smaller distance
     Then the response status code should be 200
     Then the "distance" data property equals "100" of type "int"
 
-Scenario: Update with too big present_id
-    Given that I want to update a "Player"
-    And that its "present_id" is "99"
-    And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
-    When I request "/players/2"
-    Then the response status code should be 400
-
 Scenario: Trying to update a player without a token. Should be a forbidden resource
     Given that I want to update a "Player"
     And that its "distanceBest" is "106"
@@ -112,14 +102,16 @@ Scenario: Trying to patch update a not whitelisted field
 
 Scenario: Log in one user
   Given that I want to find a "Player"
+  And that query parameter's "deviceToken" value is "deviceToken123456"
   #Ta token potece cez okrog 1.10.2013
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBADWskTAmteSB3FaVEmZArkvQzP5OJxmz617XJStwJ9ZAU4EaZAWQaUo5JnQwFmrz7Lfa1683qU8kiMdeOxMIkPhdAZCFsWB7GZCqF47s4UtMLCKFZAa9Jz6DsQPI73qJHALnEchHzBDU6xzNo6P45izXVdsbHqZCNZBu7Vs8iIyaYGUODHcOxMgZD"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAHApQ6brcFiwKM0Pdx2JojUgBqpCbQpw7bNa9gMJmcSFeeDZC1Ncmbq4ZCrb32hEIFjSB5ZBEyL8TxJnfRNWRNbj2ZBSsRCSwcnGfsh1pGzdwUHy6iDz1kF3J2VyskRyjsPrQ76Mx48kXBbMjJ7ZASoAGMvbPnigDS84W8rZCFUSIjYxLOZAZBkZD"
   When I request "/players/login"
   Then the response is JSON
   Then the response status code should be 200
   Then the "success" property equals "true" of type "string"
   Then the "msg" property equals "New User" of type "string"
   Then store the response "access_token" property as new token
+  Then the "deviceToken" property equals "deviceToken123456" of type "string"
 
   Given that I want to find a "Player"
   When I request "/players/7"
@@ -131,12 +123,12 @@ Scenario: Log in one user
   Then the "lastName" data property equals "Yangsky" of type "string"
   Then the "fb_id" data property equals "100006451511853" of type "string"
   Then the response data has a "distance" property
-  Then the response data has a "present_id" property
   Then the response data has a "friends" property
   Then the response data has an array property "friends" of length "1"
+  Then the "msg" property is not present
 
   #Ta token potece cez okrog 1.12.2013
-  And that query parameter's "token" value is "CAAFM6NnZBvQoBAN4KBDah47KVZBZBWKNHdYmYIsDVIDe0v6YA5iqtzkn8JItZAaLc8zRS2nnp8IJHjF2szVLpqQPIZB2yJ260EXQykni3KdHpq0g16wQwBbsTgvdgvZCyW8SwZBONfFEv8eyBL9FgnewLGnowjc4OryJ7uY2NZB4tSoKvZAeUN3NIozZBNnWj5I4cZD"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAHKwtAfGxTO0UwcnJAvud83GE3giuzVzmnoa8zznKk1336ADnHZBXraxzmaZBYmrc3AFn8J3q5zZCWddNXA8j1cjhcI8dqFCfuxgvKLuDCiZBnzip8MxNmUaGxM9ooorxeuZCR0RNRY0XR45LUQpE69DyPfPpaAZCZAxnw4xXJd"
   When I request "/players/login"
   Then the response is JSON
   Then the response status code should be 200
@@ -154,9 +146,28 @@ Scenario: Log in one user
   Then the "lastName" data property equals "Letuchystein" of type "string"
   Then the "fb_id" data property equals "100006424063450" of type "string"
   Then the response data has a "distance" property
-  Then the response data has a "present_id" property
   Then the response data has a "friends" property
   Then the response data has an array property "friends" of length "2"
+  Then the "msg" property is not present
+
+Scenario: Log in one user using device token
+  Given that I want to find a "Player"
+  And that query parameter's "deviceToken" value is "deviceToken123456"
+  When I request "/players/login"
+  Then the response is JSON
+  Then the response status code should be 200
+  Then the "success" property equals "true" of type "string"
+  Then the "msg" property equals "New Non Facebook User" of type "string"
+
+#login again should work
+  Given that I want to find a "Player"
+  And that query parameter's "deviceToken" value is "deviceToken123456"
+  When I request "/players/login"
+  Then the response is JSON
+  Then the response status code should be 200
+  Then the "success" property equals "true" of type "string"
+  Then the "msg" property is not present
+  Then the "deviceToken" property equals "deviceToken123456" of type "string"
 
 Scenario: Browse highscores
   Given that I want to find a "Player"
@@ -164,7 +175,7 @@ Scenario: Browse highscores
   When I request "/players/highscores/alltime"
   Then the response is JSON
   Then the "success" property equals "true" of type "string"
-  Then the response data is an array that has "8" items
+  Then the response data is an array that has "9" items
 
 
 #  Given that I want to find a "Player"

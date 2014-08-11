@@ -385,6 +385,23 @@ class RestContext extends BehatContext implements KernelAwareInterface
         }
     }
 
+
+    /**
+     * @Then /^the "([^"]*)" property is not present$/
+     */
+    public function thePropertyIsNotPresent($propertyName)
+    {
+        $data = json_decode($this->_response->getBody(true));
+
+        if (!empty($data)) {
+            if (isset($data->$propertyName)) {
+                throw new \Exception("Property '".$propertyName."' is present with value: " . $data->$propertyName . "\n");
+            }
+        } else {
+            throw new Exception("Response was not JSON\n" . $this->_response->getBody(true));
+        }
+    }
+
     /**
      * @Then /^the "([^"]*)" property equals "([^"]*)" of type "([^"]*)"$/
      */

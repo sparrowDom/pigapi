@@ -31,8 +31,7 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $fbId
      *
-     * @ORM\Column(type="string", length=64, unique=true)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=64, nullable=true, unique=true)
      * @Assert\Length(min = "1",
      *                max = "50",
      *                minMessage = "Facebook id must be at least {{ limit }} characters long",
@@ -44,15 +43,26 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $fbAccessToken
      *
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
      * @Assert\Length(min = "10",
      *                max = "255",
      *                minMessage = "Facebook token must be at least {{ limit }} characters long",
      *                maxMessage = "Facebook token must be less then {{ limit }} characters long")
-     * @Assert\NotBlank()
      * @Groups({"always"})
      */
     protected $fbAccessToken;
+
+    /**
+     * @var string $deviceAccessToken
+     *
+     * @ORM\Column(type="string", length=64, nullable=true, unique=true)
+     * @Assert\Length(min = "10",
+     *                max = "64",
+     *                minMessage = "Device token must be at least {{ limit }} characters long",
+     *                maxMessage = "Device token must be less then {{ limit }} characters long")
+     * @Groups({"always"})
+     */
+    protected $deviceAccessToken;
     
     /**
      * @var string $applePushToken
@@ -65,12 +75,11 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $name
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", nullable=true, length=255)
      * @Assert\Length(min = "1",
      *                max = "255",
      *                minMessage = "Name must be at least {{ limit }} characters long",
      *                maxMessage = "Name must be less then {{ limit }} characters long")
-     * @Assert\NotBlank()
      * @Groups({"always"})
      */
     protected $name;
@@ -78,8 +87,7 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $firstName
      *
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", nullable=true, length=255)
      * @Groups({"always"})
      */
     protected $firstName;
@@ -88,7 +96,7 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $surname
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", nullable=true, length=255)
      * @Groups({"always"})
      */
     protected $surname;
@@ -97,7 +105,7 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $slug
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", nullable=true, length=255)
      * @Groups({"always"})
      */
     protected $slug;
@@ -116,21 +124,6 @@ class Player extends BaseAuditableEntity
      * @Groups({"always"})
      */
     protected $distanceBest;
-
-    /**
-     * @var integer $present_selected
-     *
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank()
-     * @Assert\Range(
-     *               min = 0,
-     *               max = 15,
-     *               minMessage = "Selected present should be a positive number",
-     *               maxMessage = "Value {{ value }} for selected present is too big"
-     * )
-     * @Groups({"always"})
-     */
-    protected $present_selected;
 
     /**
      * @ORM\ManyToMany(targetEntity="Player")
@@ -220,6 +213,29 @@ class Player extends BaseAuditableEntity
     public function getFbAccessToken()
     {
         return $this->fbAccessToken;
+    }
+
+    /**
+     * Set deviceAccessToken
+     *
+     * @param string $deviceAccessToken
+     * @return Player
+     */
+    public function setDeviceAccessToken($deviceAccessToken)
+    {
+        $this->deviceAccessToken = $deviceAccessToken;
+
+        return $this;
+    }
+
+    /**
+     * Get deviceAccessToken
+     *
+     * @return string
+     */
+    public function getDeviceAccessToken()
+    {
+        return $this->deviceAccessToken;
     }
 
     /**
@@ -361,12 +377,12 @@ class Player extends BaseAuditableEntity
     /**
      * Add friends
      *
-     * @param \Mimazoo\SoaBundle\Entity\Player $friends
+     * @param \Mimazoo\SoaBundle\Entity\Player $friend
      * @return Player
      */
-    public function addFriend(\Mimazoo\SoaBundle\Entity\Player $friends)
+    public function addFriend(\Mimazoo\SoaBundle\Entity\Player $friend)
     {
-        $this->friends[] = $friends;
+        $this->friends[] = $friend;
 
         return $this;
     }
@@ -387,7 +403,6 @@ class Player extends BaseAuditableEntity
                         'firstName' => $this->getFirstName(),
                         'lastName' => $this->getSurname(),
                         'fb_id' => $this->getFbId(),
-                        'present_id' => $this->getPresentSelected(),
                         'distance' => $this->getDistanceBest()
         );
 
@@ -406,7 +421,6 @@ class Player extends BaseAuditableEntity
                     'firstName' => $friend->getFirstName(),
                     'lastName' => $friend->getSurname(),
                     'fb_id' => $friend->getFbId(),
-                    'present_id' => $friend->getPresentSelected(),
                     'distance' => $friend->getDistanceBest()
                 );
             }
@@ -416,29 +430,5 @@ class Player extends BaseAuditableEntity
 
 
         return $player;
-    }
-
-
-    /**
-     * Set present_selected
-     *
-     * @param integer $presentSelected
-     * @return Player
-     */
-    public function setPresentSelected($presentSelected)
-    {
-        $this->present_selected = $presentSelected;
-
-        return $this;
-    }
-
-    /**
-     * Get present_selected
-     *
-     * @return integer 
-     */
-    public function getPresentSelected()
-    {
-        return $this->present_selected;
     }
 }

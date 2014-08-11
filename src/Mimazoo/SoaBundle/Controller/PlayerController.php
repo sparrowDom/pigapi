@@ -136,66 +136,103 @@ class PlayerController extends Controller
      * @View(statusCode="200")
      */
     public function loginAction(Request $request){
-
+        $deviceToken = $request->query->get('deviceToken');
         $token = $request->query->get('token');
-        /* @var $facebook \FOS\FacebookBundle\FOSFacebookBundle */
-        $facebook = $this->get('facebook');
-        //If token is empty string it does not get set
-        $facebook->SetAccessToken(strlen($token) > 0 ? $token : 'empty');
+        if(strlen($deviceToken) == 0 && strlen($token) == 0)
+            return array('success' => 'false', 'error' => 13, 'errorMsg' => 'One of token or deviceToken must be present at login!');
 
-        $isNewPlayer = false;
+        // If facebook token available
+        // NOTICE: This part might be slow since it is calling facebook OAUTH service
+        if(strlen($token) > 0){
+            /* @var $facebook \FOS\FacebookBundle\FOSFacebookBundle */
+            $facebook = $this->get('facebook');
+            //If token is empty string it does not get set
+            $facebook->SetAccessToken(strlen($token) > 0 ? $token : 'empty');
+            $isNewPlayer = false;
 
-        try{
-            $fbResult = $facebook->api('/me', 'GET', array("fields" => "id"));
+            try{
+                $fbResult = $facebook->api('/me', 'GET', array("fields" => "id"));
 
-            if($facebook->SetExtendedAccessToken() !== false){
+                if($facebook->SetExtendedAccessToken() !== false){
 
-                $currentPlayer = $this->UpdateTokenInformation($facebook, $fbResult['id']);
-                //If false means we need to handle a new player
-                if($currentPlayer == false){
-                    $fbResult = $facebook->api('/me', 'GET', array('fields' => 'id,name,friends,email,first_name,last_name'));
+                    $currentPlayer = $this->FindUserAndUpdateToken($facebook, $fbResult['id']);
+                    //If false means we need to handle a new player
+                    if($currentPlayer == false){
+                        $fbResult = $facebook->api('/me', 'GET', array('fields' => 'id,name,friends,email,first_name,last_name'));
+                        $player = $this->FindUserByDeviceToken(isset($deviceToken) ? $deviceToken : 'empty'); //see if we have that device in db
 
-                    $player = new Player();
-                    $player->setFirstName($fbResult['first_name']);
-                    $player->setSurname($fbResult['last_name']);
-                    $player->setName($fbResult['name']);
-                    $player->setFbId($fbResult['id']);
-                    $player->setFbAccessToken($facebook->getAccessToken());
-                    $player->setSlug(mb_strtolower(str_replace(' ', '_', $fbResult['name'])));
-                    $player->setDistanceBest(0);
-                    $player->setPresentSelected(0);
+                        $player = $player !== null ? $player : new Player();
+                        $player->setFirstName($fbResult['first_name']);
+                        $player->setSurname($fbResult['last_name']);
+                        $player->setName($fbResult['name']);
+                        $player->setFbId($fbResult['id']);
+                        $player->setFbAccessToken($facebook->getAccessToken());
+                        $player->setSlug(mb_strtolower(str_replace(' ', '_', $fbResult['name'])));
+                        $player->setDistanceBest(0);
 
-                    $friends = $this->getFriends($fbResult['friends']);
-                    $player->setFriends($friends);
+                        $friends = $this->getFriends($fbResult['friends']);
+                        $player->setFriends($friends);
 
-                    $errorView = $this->processPlayer($player);
-                    $currentPlayer = $player;
+                        $errorView = $this->processPlayer($player);
+                        $currentPlayer = $player;
 
-                    if($errorView != null)
-                        return $errorView;
+                        if($errorView != null)
+                            return $errorView;
 
-                    $this->addANewFriend($player, $friends);
+                        $this->addANewFriend($player, $friends);
 
-                    $isNewPlayer = true;
+                        $isNewPlayer = true;
+                    }
+                }
+                else{
+                    return array('success' => 'false', 'error' => 12, 'errorMsg' => 'Can not extend token lifetime');
                 }
             }
-            else{
-                return array('success' => 'false', 'error' => 12, 'errorMsg' => 'Can not extend token lifetime');
+            catch(FacebookApiException $e){
+                return $this->handleFacebookApiError($e, $facebook, $token);
             }
         }
-        catch(FacebookApiException $e){
-            return $this->handleFacebookApiError($e, $facebook, $token);
+        // If fb player not present try to find one by device token
+        $currentPlayer = isset($currentPlayer) ? $currentPlayer : $this->FindUserByDeviceToken(isset($deviceToken) ? $deviceToken : 'empty');
+
+        if(strlen($deviceToken) > 0 && $currentPlayer == null) { // new user and device token present
+            $currentPlayer = new Player();
+            $currentPlayer->setDeviceAccessToken($deviceToken);
+            $currentPlayer->setDistanceBest(0);
+            $errorView = $this->processPlayer($currentPlayer);
+            if($errorView != null)
+                return $errorView;
+
+            $currentPlayer->setFirstName("Piggy" . $currentPlayer->getId());
+            $currentPlayer->setSurname("");
+            $currentPlayer->setName($currentPlayer->getFirstName());
+            $this->processPlayer($currentPlayer);
+            $isNewDevicePlayer = true;
+        }
+        // Device token present and $currentPlayer set
+        else if(strlen($deviceToken) > 0){
+            $currentPlayer->setDeviceAccessToken($deviceToken);
         }
 
         $this->getLogger()->info("User logged in id:" . $currentPlayer->getId());
 
-        $json = array('success' => 'true', 'access_token' => $facebook->GetAccessToken());
+        $json = array('success' => 'true');
+
+        if($currentPlayer->getDeviceAccessToken() != null)
+            $json['deviceToken'] = $currentPlayer->getDeviceAccessToken();
+
+        if($currentPlayer->getFbAccessToken() != null)
+            $json['access_token'] = $currentPlayer->getFbAccessToken();
 
         if(is_object($currentPlayer))
             $json['id'] = $currentPlayer->getId();
 
-        if($isNewPlayer)
+        if(isset($isNewDevicePlayer) && $isNewDevicePlayer)
+            $json['msg'] = 'New Non Facebook User';
+
+        if(isset($isNewPlayer) && $isNewPlayer)
             $json['msg'] = 'New User';
+
 
         return $json;
     }
@@ -303,18 +340,6 @@ class PlayerController extends Controller
     }
 
     /**
-     * @View(statusCode="201")
-     */
-    /*
-    public function postAction()
-    {
-        $request = $this->getRequest();
-        print_r($request->request);exit;
-    	return $this->processPlayer(new Player());
-    }
-    */
-
-    /**
      * @View(statusCode="204")
      */
     public function postAction(Player $player)
@@ -334,7 +359,6 @@ class PlayerController extends Controller
                 $this->checkIfBeatenHighscoreOfFriends($player, $previousDistanceBest, $distance);
                 $player->setDistanceBest($distance);
                 $this->getLogger()->info("Updating player distance id: " . $player->getId());
-                //return $this->processPlayer($player);
             }
         }
 
@@ -342,14 +366,6 @@ class PlayerController extends Controller
         if($pushToken != false){
             $player->setApplePushToken(trim($pushToken));
             $this->getLogger()->info("Updating player push token id: " . $player->getId());
-        }
-
-        $present_id = $request->request->get("present_id");
-        if($present_id != false){
-            $present_id = intval($present_id);
-            $player->setPresentSelected($present_id);
-            $this->getLogger()->info("Updating player present_id id: " . $player->getId());
-            //return $this->processPlayer($player);
         }
 
     	return $this->processPlayer($player);
@@ -378,7 +394,6 @@ class PlayerController extends Controller
                 $previousDistanceBest = $player->getDistanceBest();
                 $this->checkIfBeatenHighscoreOfFriends($player, $previousDistanceBest, $distance);
                 $player->setDistanceBest($distance);
-                //return $this->processPlayer($player);
             }
         }
 
@@ -386,7 +401,6 @@ class PlayerController extends Controller
         if($present_id != false){
             $present_id = intval($present_id);
             $player->setPresentSelected($present_id);
-            //return $this->processPlayer($player);
         }
 
         $this->getLogger()->info("Updating player id: " . $player->getId());
@@ -432,8 +446,30 @@ class PlayerController extends Controller
     	$em->flush();
     }
     */
+/*
+    protected function UpdateDeviceTokenIfAvailable(Player $player, $deviceToken){
+        $em = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:Player');
 
-    protected function UpdateTokenInformation(FacebookSessionPersistence $facebook, $fbid){
+        if(is_string($deviceToken) && strlen($deviceToken) > 10){
+            $repository->setDeviceAccessToken($deviceToken);
+            $em->persist($player);
+            $em->flush();
+            return true;
+        }
+        return false;
+
+    }*/
+
+    protected function FindUserByDeviceToken($deviceToken){
+        $em = $this->getDoctrine()->getManager();
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:Player');
+        return $repository->findOneByDeviceAccessToken($deviceToken);
+    }
+
+    protected function FindUserAndUpdateToken(FacebookSessionPersistence $facebook, $fbid){
         $em = $this->getDoctrine()->getManager();
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:Player');
