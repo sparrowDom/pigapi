@@ -43,19 +43,19 @@ class RestContext extends BehatContext implements KernelAwareInterface
         $this->_restObject  = new \stdClass();
         $this->_client      = new \Guzzle\Service\Client();
         $this->_queryParameters = array();
-        
+
         //do not return exceptions on 4xx and 5xx responses guzzle fix
         $this->_client->getEventDispatcher()->addListener(
-        		'request.error', 
+        		'request.error',
         		function(Event $event) {
         			$event->stopPropagation();
         		},
         		-254
         );
-        
+
     	$this->_parameters = $parameters;
     }
-    
+
     /**
      * Sets HttpKernel instance.
      * This method will be automatically called by Symfony2Extension ContextInitializer.
@@ -87,7 +87,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
         $this->_restObjectType   = ucwords(strtolower($objectType));
         $this->_restObjectMethod = 'post';
     }
-    
+
     /**
      * @Given /^that I want to update an? "([^"]*)"$/
      */
@@ -96,7 +96,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     	$this->_restObjectType   = ucwords(strtolower($objectType));
         $this->_restObjectMethod = 'post';
     }
-    
+
     /**
      * @Given /^that I want to patch update an? "([^"]*)"$/
      */
@@ -105,8 +105,8 @@ class RestContext extends BehatContext implements KernelAwareInterface
     	$this->_restObjectType   = ucwords(strtolower($objectType));
     	$this->_restObjectMethod = 'patch';
     }
-    
-    
+
+
      /**
      * @Given /^that I want to find an? "([^"]*)"$/
      */
@@ -114,8 +114,9 @@ class RestContext extends BehatContext implements KernelAwareInterface
     {
         $this->_restObjectType   = ucwords(strtolower($objectType));
         $this->_restObjectMethod = 'get';
+
     }
-    
+
     /**
      * @Given /^that I want to delete an? "([^"]*)"$/
      */
@@ -132,7 +133,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     {
         $this->_restObject->$propertyName = $propertyValue;
     }
-    
+
     /**
      * @Given /^that its "([^"]*)" is boolean "([^"]*)"$/
      */
@@ -146,8 +147,8 @@ class RestContext extends BehatContext implements KernelAwareInterface
     		throw new \Exception('Value should be true or false');
     	}
     }
-    
-    
+
+
     /**
      * @Given /^that its "([^"]*)" is a geometry with WKT value "([^"]*)"$/
      */
@@ -169,7 +170,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     			throw new \Exception('Geometry type not expected.');
     	}
     }
-    
+
     /**
      * @Given /^that "([^"]*)" is a time range with json value '([^']*)'$/
      */
@@ -177,7 +178,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     {
     	$this->_restObject->$propertyName = $json;
     }
-    
+
     /**
      * @When /^I request for first item in "([^"]*)"$/
      */
@@ -186,11 +187,11 @@ class RestContext extends BehatContext implements KernelAwareInterface
     	$response = $this->_client
     	->get($this->getParameter('base_url') . $pageUrl, $this->getOauthHeader())
     	->send();
-    	
+
     	$entity = substr($pageUrl, (strrpos($pageUrl, '/') + 1),-1);
-    	
+
     	$data = json_decode($response->getBody());
-    	
+
     	if (isset($data->_embedded->$entity) && is_array($data->_embedded->$entity)) {
     		$firstId = current($data->_embedded->$entity)->id;
     		$this->iRequest($pageUrl . '/' . $firstId);
@@ -239,7 +240,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
                     ->post($this->_requestUrl,null,$body)
                     ->setHeader("Content-Type", "application/json")
                     ->send();
-                
+
                 break;
             case 'PUT':
                 $body = json_encode((array)$this->_restObject);
@@ -263,7 +264,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
                     ->delete($this->_requestUrl.'?'.http_build_str((array)$this->_restObject), null)
             		->send();
             	break;
-            	
+
         }
 
         $this->_response = $response;
@@ -483,7 +484,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
      */
     public function theResponseStatusCodeShouldBe($httpStatus)
     {
-    	
+
         if ((string)$this->_response->getStatusCode() !== $httpStatus) {
         	throw new \Exception('HTTP code does not match '.$httpStatus.
         		' (actual: '.$this->_response->getStatusCode().') body:' . $this->_response->getBody(true));
@@ -500,20 +501,20 @@ class RestContext extends BehatContext implements KernelAwareInterface
     	$this->_response = $this->_client
     	->get($this->_response->getHeader('location')->__toString(), $this->getOauthHeader())
     	->send();
-    	
+
     	$this->thePropertyEquals($name, $value, $type);
     }
-    
+
     /**
      * Generate authorization header with oauth
-     * 
+     *
      * @return array
      */
     public function getOauthHeader() {
     	return array('Authorization' => 'Bearer ' . $this->kernel->getContainer()->getParameter('oauth_token'));
     }
-    
-    
+
+
      /**
      * @Then /^echo last response$/
      */

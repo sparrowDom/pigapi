@@ -153,10 +153,14 @@ class Controller extends FOSRestController implements ClassResourceInterface
 
     protected function GetPlayerByToken(Request $request){
         $token = $request->query->get('token');
+        $deviceToken = $request->query->get('deviceToken');
+
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:Player');
 
         $player = $repository->findOneByFbAccessToken($token);
+        if($player == null)
+            $player = $repository->findOneByDeviceAccessToken($deviceToken);
 
         return $player;
     }

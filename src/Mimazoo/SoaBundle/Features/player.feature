@@ -63,6 +63,33 @@ Scenario: Update apple push token
     Then the response status code should be 200
     Then the "apple_push_token" data property equals "XXXXX-XXXXX-XXXXX-XXXXX" of type "string"
 
+Scenario: Update apple push token using device token
+  Given that I want to update a "Player"
+  And that its "apple_push_token" is "XXXXX-XXXXX-XXXXX-XXXXX"
+  And that query parameter's "deviceToken" value is "deviceToken2"
+  When I request "/players/2"
+  Then the response status code should be 204
+
+  Given that I want to find a "Player"
+  And that query parameter's "deviceToken" value is "deviceToken2"
+  When I request "/players/2"
+  Then the response status code should be 200
+  Then the "apple_push_token" data property equals "XXXXX-XXXXX-XXXXX-XXXXX" of type "string"
+
+# lets say in case that device token changes, but the fb account is well connected
+Scenario: Should be able to access resource if at least one of the tokens is correct
+  Given that I want to find a "Player"
+  And that query parameter's "deviceToken" value is "wrong device token"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  When I request "/players/2"
+  Then the response status code should be 200
+
+  Given that I want to find a "Player"
+  And that query parameter's "deviceToken" value is "deviceToken2"
+  And that query parameter's "token" value is "WRONG FB TOKEN"
+  When I request "/players/2"
+  Then the response status code should be 200
+
 Scenario: Update with smaller distance
     Given that I want to update a "Player"
     And that its "distance" is "100"

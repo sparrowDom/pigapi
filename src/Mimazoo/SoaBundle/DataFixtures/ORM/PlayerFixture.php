@@ -24,6 +24,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['mitja']->setSlug('mitja-poljsak');
         $players['mitja']->setSurname('Poljšak');
         $players['mitja']->setFirstName('Mitja');
+        $players['mitja']->setDeviceAccessToken('deviceToken1');
 		$players['mitja']->setDistanceBest(-1);
 
         $players['domen'] = new Player();
@@ -33,6 +34,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['domen']->setName('Domen Grabec');
         $players['domen']->setSurname('Grabec');
         $players['domen']->setFirstName('Domen');
+        $players['domen']->setDeviceAccessToken('deviceToken2');
         $players['domen']->setDistanceBest(-1);
 
         $players['rick'] = new Player();
@@ -42,6 +44,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['rick']->setName('Rick Amfdfbjihfhb Wongsky');
         $players['rick']->setSurname('Wongsly');
         $players['rick']->setFirstName('Rick');
+        $players['rick']->setDeviceAccessToken('deviceToken3');
         $players['rick']->setDistanceBest(-1);
 
         $players['joe'] = new Player();

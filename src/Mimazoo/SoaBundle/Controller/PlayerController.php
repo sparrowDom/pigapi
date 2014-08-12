@@ -319,8 +319,7 @@ class PlayerController extends Controller
      */
     public function getAction($id, Player $player)
     {
-        $token = $this->getRequest()->query->get('token');
-        if(true !== ($rsp = $this->handleIsAuthorised($player, $token))){
+        if(true !== ($rsp = $this->handleIsAuthorised($player, $this->getRequest()))){
             return $rsp;
         }
 
@@ -331,12 +330,16 @@ class PlayerController extends Controller
     /*
      * I guess we could expand this sometime in the future
      */
-    public function handleIsAuthorised(Player $player, $token){
-        if(strcmp($player->getFbAccessToken(), $token) != 0){
-            //Authorisation was ok but the resource is forbidden
-            return $this->view(array('success' => 'false', 'error' => 14, 'errorMsg' => 'Forbidden resource'), 403);
+    public function handleIsAuthorised(Player $player, $request){
+        $token = $request->query->get('token');
+        $deviceToken = $request->query->get('deviceToken');
+
+        if(strcmp($player->getFbAccessToken(), $token) == 0 || strcmp($player->getDeviceAccessToken(), $deviceToken) == 0){
+            // one of the tokens needs to be correct and we are good
+            return true;
         }
-        return true;
+        //Authorisation was ok but the resource is forbidden
+        return $this->view(array('success' => 'false', 'error' => 14, 'errorMsg' => 'Forbidden resource'), 403);
     }
 
     /**
@@ -344,10 +347,8 @@ class PlayerController extends Controller
      */
     public function postAction(Player $player)
     {
-
         $request = $this->getRequest();
-        $token = $request->query->get('token');
-        if(true !== ($rsp = $this->handleIsAuthorised($player, $token))){
+        if(true !== ($rsp = $this->handleIsAuthorised($player, $this->getRequest()))){
             return $rsp;
         }
 
@@ -368,44 +369,24 @@ class PlayerController extends Controller
             $this->getLogger()->info("Updating player push token id: " . $player->getId());
         }
 
+
     	return $this->processPlayer($player);
     }
 
     /**
      * @View(statusCode="204")
      */
+    // NOTICE: currently we do not support updating via GET
+/*
     public function updateAction(Request $request){
-
-        $token = $request->query->get('token');
-        $repository = $this->getDoctrine()
-            ->getRepository('MimazooSoaBundle:Player');
-
-        /* @var $player \Mimazoo\SoaBundle\Entity\Player */
-        $player = $repository->findOneByFbAccessToken($token);
-
-        if($player == null){
-            return $this->view(array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid'), $token);
+        error_log($request->query->get('distance') . "SHIT!");
+        $player = $this->GetPlayerByToken($request);
+        if(true !== ($rsp = $this->handleIsAuthorised($player, $request))){
+            return $rsp;
         }
 
-        $distance = $request->request->get("distance");
-        if($distance != false){
-            $distance = intval($distance);
-            if($player->getDistanceBest() < $distance){
-                $previousDistanceBest = $player->getDistanceBest();
-                $this->checkIfBeatenHighscoreOfFriends($player, $previousDistanceBest, $distance);
-                $player->setDistanceBest($distance);
-            }
-        }
-
-        $present_id = $request->request->get("present_id");
-        if($present_id != false){
-            $present_id = intval($present_id);
-            $player->setPresentSelected($present_id);
-        }
-
-        $this->getLogger()->info("Updating player id: " . $player->getId());
-        return $this->processPlayer($player);
-    }
+        return $this->postAction($player);
+    }*/
 
     private function checkIfBeatenHighscoreOfFriends(Player $player, $previousDistanceBest, $newDistanceBest){
         foreach($player->getFriends() as $friend){
