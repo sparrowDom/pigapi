@@ -438,7 +438,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
         if (empty($data)) {
             throw new Exception("Response was not JSON\n" . $this->_response->getBody(true));
         }
-
+        
         $data = $data->data[0];
 
         if (empty($data)) {

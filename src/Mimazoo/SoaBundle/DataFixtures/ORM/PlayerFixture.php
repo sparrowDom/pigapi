@@ -34,6 +34,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['domen']->setName('Domen Grabec');
         $players['domen']->setSurname('Grabec');
         $players['domen']->setFirstName('Domen');
+        $players['domen']->setIsSuperUser(true);
         $players['domen']->setDeviceAccessToken('deviceToken2');
         $players['domen']->setDistanceBest(-1);
 

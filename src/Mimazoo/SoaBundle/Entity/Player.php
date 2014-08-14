@@ -39,6 +39,14 @@ class Player extends BaseAuditableEntity
      * @Groups({"always"})
      */
     protected $fbId;
+
+    /**
+     * @var boolean $isSuperUser
+     *
+     * @ORM\Column(type="boolean")
+     * @Groups({"always"})
+     */
+    protected $isSuperUser = false;
     
     /**
      * @var string $fbAccessToken
@@ -430,5 +438,28 @@ class Player extends BaseAuditableEntity
 
 
         return $player;
+    }
+
+    /**
+     * Set isSuperUser
+     *
+     * @param boolean $isSuperUser
+     * @return Player
+     */
+    public function setIsSuperUser($isSuperUser)
+    {
+        $this->isSuperUser = $isSuperUser;
+
+        return $this;
+    }
+
+    /**
+     * Get isSuperUser
+     *
+     * @return boolean 
+     */
+    public function getIsSuperUser()
+    {
+        return $this->isSuperUser;
     }
 }

@@ -8,7 +8,7 @@ challenge:
 
 challenge:
     type:     rest
-    resource: Mimazoo\SoaBundle\Controller\WeeklyChallengeController
+    resource: Mimazoo\SoaBundle\Controller\WeeklychallengeController
 
 notification:
     type:     rest
