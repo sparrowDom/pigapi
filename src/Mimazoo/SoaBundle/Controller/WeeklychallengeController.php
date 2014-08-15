@@ -47,8 +47,48 @@ class WeeklychallengeController extends Controller
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallenge');
 
-        
+        $filter = $request->request->has("filter") ? $request->request->get("filter") : "all";
+
+        $qb = $repository->createQueryBuilder('wc');
+
+        switch($filter){
+            case "completed":
+            $qb = $qb->where('wc.completedOn IS NOT NULL');
+            break;
+            case "waiting":
+            $qb = $qb->where('wc.startedOn IS NOT NULL');
+            break;
+            case "live":
+            $qb = $qb->where('wc.startedOn IS NOT NULL AND wc.completedOn IS NULL');
+            break;
+            default:
+            break;
+        }
+        $qb = $qb->orderBy('wc.id', 'ASC');
+
+        $result = $qb->getQuery()->getResult();
+        return array('success' => 'true', 'data' => $result);
     }
+
+    /**
+     * @View(statusCode="200")
+     *
+     */
+    public function getAction($id, Request $request){
+        if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
+            return $view;
+
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:WeeklyChallenge');
+
+        $wc = $repository->findOneById($id);
+
+        if($wc != null)
+            return array('success' => 'true', 'data' => $wc);
+        else
+            return array('success' => 'false');
+    }
+
     /**
      * @View(statusCode="200")
      *
@@ -80,6 +120,7 @@ class WeeklychallengeController extends Controller
         if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
             return $view;
 
+        $isCompleted = $request->has("complete");
     }
     /**
      * @View(statusCode="204")
@@ -93,17 +134,6 @@ class WeeklychallengeController extends Controller
         $wc->setType($request->get("type"));
 
         return $this->process($wc);
-    }
-
-    protected function validatePlayerIsSuperUser($request){
-        $player = $this->GetPlayerByToken($request);
-
-        if($player == null)
-            return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
-        else if($player->getIsSuperUser() !== true)
-            return array('success' => 'false', 'error' => 19, 'errorMsg' => 'User not authorized to perform action');
-
-        return true;
     }
 
     /**

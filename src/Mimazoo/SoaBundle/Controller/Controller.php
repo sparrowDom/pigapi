@@ -165,6 +165,17 @@ class Controller extends FOSRestController implements ClassResourceInterface
         return $player;
     }
 
+    protected function validatePlayerIsSuperUser($request){
+        $player = $this->GetPlayerByToken($request);
+
+        if($player == null)
+            return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
+        else if($player->getIsSuperUser() !== true)
+            return array('success' => 'false', 'error' => 19, 'errorMsg' => 'User not authorized to perform action');
+
+        return true;
+    }
+
     protected function handleFacebookApiError(\FacebookApiException $exception, FacebookSessionPersistence $facebook, $token){
         $result = $exception->getResult();
         if(isset($result['error'])){

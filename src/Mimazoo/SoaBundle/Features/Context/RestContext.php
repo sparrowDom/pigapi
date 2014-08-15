@@ -415,12 +415,15 @@ class RestContext extends BehatContext implements KernelAwareInterface
 
         if (!empty($data)) {
         	if (!isset($data->$propertyName)) {
+                print_r($data);
                 throw new \Exception("Property '".$propertyName."' is not set!\n");
             }
             if ($data->$propertyName !== $propertyValue) {
+                print_r($data);
             	throw new \Exception('Property value mismatch! (given: '.$propertyValue.', match: '.$data->$propertyName.')');
             }
         } else {
+            print_r($data);
             throw new Exception("Response was not JSON\n" . $this->_response->getBody(true));
         }
     }
