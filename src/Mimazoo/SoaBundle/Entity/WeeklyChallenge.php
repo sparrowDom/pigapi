@@ -47,6 +47,21 @@ class WeeklyChallenge extends BaseAuditableEntity
      */
     protected $isCompleted = false;
     
+    /**
+     * @var \DateTime $startedOn
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"always"})
+     */
+    protected $startedOn = null;
+
+    /**
+     * @var \DateTime $completedOn
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"always"})
+     */
+    protected $completedOn = null;
 
 
     /**
@@ -135,5 +150,51 @@ class WeeklyChallenge extends BaseAuditableEntity
         );
 
         return $challenge;
+    }
+
+
+
+    /**
+     * Set startedOn
+     *
+     * @param \DateTime $startedOn
+     * @return WeeklyChallenge
+     */
+    public function setStartedOn($startedOn)
+    {
+        $this->startedOn = $startedOn;
+        return $this;
+    }
+
+    /**
+     * Get startedOn
+     *
+     * @return \DateTime 
+     */
+    public function getStartedOn()
+    {
+        return $this->startedOn;
+    }
+
+    /**
+     * Set completedOn
+     *
+     * @param \DateTime $completedOn
+     * @return WeeklyChallenge
+     */
+    public function setCompletedOn($completedOn)
+    {
+        $this->completedOn = $completedOn;
+        return $this;
+    }
+
+    /**
+     * Get completedOn
+     *
+     * @return \DateTime 
+     */
+    public function getCompletedOn()
+    {
+        return $this->completedOn;
     }
 }

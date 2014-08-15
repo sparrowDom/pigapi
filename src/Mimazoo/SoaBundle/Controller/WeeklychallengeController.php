@@ -35,6 +35,20 @@ use RMS\PushNotificationsBundle\Message\iOSMessage;
 class WeeklychallengeController extends Controller
 {
 
+
+    /**
+     * @View(statusCode="200")
+     *
+     */
+    public function cgetAction(Request $request){
+        if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
+            return $view;
+
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:WeeklyChallenge');
+
+        
+    }
     /**
      * @View(statusCode="200")
      *
@@ -62,7 +76,26 @@ class WeeklychallengeController extends Controller
     /**
      * @View(statusCode="204")
      */
+    public function patchAction(Request $request){
+        if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
+            return $view;
+
+    }
+    /**
+     * @View(statusCode="204")
+     */
     public function postAction(Request $request){
+        if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
+            return $view;
+
+        $wc = new WeeklyChallenge();
+        $wc->setDescription($request->get("description"));
+        $wc->setType($request->get("type"));
+
+        return $this->process($wc);
+    }
+
+    protected function validatePlayerIsSuperUser($request){
         $player = $this->GetPlayerByToken($request);
 
         if($player == null)
@@ -70,11 +103,7 @@ class WeeklychallengeController extends Controller
         else if($player->getIsSuperUser() !== true)
             return array('success' => 'false', 'error' => 19, 'errorMsg' => 'User not authorized to perform action');
 
-        $wc = new WeeklyChallenge();
-        $wc->setDescription($request->get("description"));
-        $wc->setType($request->get("type"));
-
-        return $this->process($wc);
+        return true;
     }
 
     /**
