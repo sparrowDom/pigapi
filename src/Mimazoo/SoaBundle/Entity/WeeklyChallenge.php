@@ -48,6 +48,22 @@ class WeeklyChallenge extends BaseAuditableEntity
     protected $isCompleted = false;
     
     /**
+     * @var boolean $isFloat
+     *
+     * @ORM\Column(type="boolean")
+     * @Groups({"always"})
+     */
+    protected $isFloat = false;
+
+    /**
+     * @var boolean $smallerIsBetter
+     *
+     * @ORM\Column(type="boolean")
+     * @Groups({"always"})
+     */
+    protected $smallerIsBetter = false;
+
+    /**
      * @var \DateTime $startedOn
      *
      * @ORM\Column(type="datetime", nullable=true)
@@ -196,5 +212,51 @@ class WeeklyChallenge extends BaseAuditableEntity
     public function getCompletedOn()
     {
         return $this->completedOn;
+    }
+
+    /**
+     * Set isFloat
+     *
+     * @param boolean $isFloat
+     * @return WeeklyChallenge
+     */
+    public function setIsFloat($isFloat)
+    {
+        $this->isFloat = $isFloat;
+
+        return $this;
+    }
+
+    /**
+     * Get isFloat
+     *
+     * @return boolean 
+     */
+    public function getIsFloat()
+    {
+        return $this->isFloat;
+    }
+
+    /**
+     * Set smallerIsBetter
+     *
+     * @param boolean $smallerIsBetter
+     * @return WeeklyChallenge
+     */
+    public function setSmallerIsBetter($smallerIsBetter)
+    {
+        $this->smallerIsBetter = $smallerIsBetter;
+
+        return $this;
+    }
+
+    /**
+     * Get smallerIsBetter
+     *
+     * @return boolean 
+     */
+    public function getSmallerIsBetter()
+    {
+        return $this->smallerIsBetter;
     }
 }

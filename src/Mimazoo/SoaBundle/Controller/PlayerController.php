@@ -79,9 +79,8 @@ class PlayerController extends Controller
     public function alltimeHighscoresAction(Request $request){
         $player = $this->GetPlayerByToken($request);
 
-        if($player == null){
+        if($player == null)
             return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
-        }
 
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:Player');

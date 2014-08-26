@@ -169,9 +169,9 @@ class Controller extends FOSRestController implements ClassResourceInterface
         $player = $this->GetPlayerByToken($request);
 
         if($player == null)
-            return array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid');
+            return $this->view(array('success' => 'false', 'error' => 10, 'errorMsg' => 'Token invalid'), 403);
         else if($player->getIsSuperUser() !== true)
-            return array('success' => 'false', 'error' => 19, 'errorMsg' => 'User not authorized to perform action');
+            return $this->view(array('success' => 'false', 'error' => 19, 'errorMsg' => 'User not authorized to perform action'), 403);
 
         return true;
     }
