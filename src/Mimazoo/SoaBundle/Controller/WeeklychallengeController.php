@@ -97,7 +97,7 @@ class WeeklychallengeController extends Controller
 
     public function getCurrentAction(Request $request)
     {
-        if($player = $this->GetPlayerByToken($request) == false)
+        if(($player = $this->GetPlayerByToken($request)) == false)
             return $this->view("Invalid token", 400);
         
         $challenge = $this->getCurrentChallenge();
@@ -166,43 +166,36 @@ class WeeklychallengeController extends Controller
      * - 13 + -> specific enemy kill, specific powerup pickup.
      */
     public function postScoreAction(Request $request){
-        if($player = $this->GetPlayerByToken($request) == false)
+        if(($player = $this->GetPlayerByToken($request)) == false)
             return $this->view("Invalid token", 400);
 
-        $type = intval($request->request->get("type"));
-        if ($type < 1)
-            return $this->view("Type parameter is mandatory and should be bigger than 0. Type received: " . $type, 400);
-
-        $rawScore = $request->request->get("score");
         $challenge = $this->getCurrentChallenge();
+        $type = $challenge->getType();
 
-        $score = intval($rawScore);
         if($type == 1)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("coins", 0)), 1);
         else if($type == 2)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 1);
         else if($type == 3)
-            $this->processScoreWithStrategy($player, $challenge, $score, 2);
+            $this->processScoreWithStrategy($player, intval($request->request->get("enemiesKill", 0)), intval($request->request->get("coins", 0)), 2);
         else if($type == 4)
-            $this->processScoreWithStrategy($player, $challenge, $score, 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 2);
         else if($type == 5)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
-        else if($type == 6){
-            $score = floatval($rawScore);
-            $this->processScoreWithStrategy($player, $challenge, $score, 3);
-        }
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("enemiesKill", 0)), 1);
+        else if($type == 6)
+            $this->processScoreWithStrategy($player, $challenge, floatval($request->request->get("wolfDefeatTime", 10)), 3);
         else if($type == 7)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("beesCaught", 0)), 1);
         else if($type == 8)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("beeBonusLevels", 0)), 1);
         else if($type == 9)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("runBonusLevels", 0)), 1);
         else if($type == 10)
-            $this->processScoreWithStrategy($player, $challenge, $score, 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distancePiggyLost", 0)), 2);
         else if($type == 11)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("powerupsCollected", 0)), 1);
         else if($type == 12)
-            $this->processScoreWithStrategy($player, $challenge, $score, 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("powerupsHeartCollected", 0)), 1);
 
 
     }
@@ -218,10 +211,10 @@ class WeeklychallengeController extends Controller
     protected function processScoreWithStrategy($player, $challenge, $score, $strategy){
         $score = floatval($score); // No sql injections please :)
         $em = $this->getDoctrine()->getManager();
-        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . " player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . " updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
+        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . ", player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . ", updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
         switch ($strategy) {
             case 1:
-                $sql .= " score = score + " $score;
+                $sql .= " score = score + " . $score;
                 break;
             case 2:
                 $sql .= " score = (case when " . $score . " > score then " . $score . " else score end)";
@@ -240,8 +233,8 @@ class WeeklychallengeController extends Controller
     /**
      * @View(statusCode="200")
      */
-    public function getTopScoresAction(Request $request){
-        if($player = $this->GetPlayerByToken($request) == false)
+    public function getTopscoresAction(Request $request){
+        if(($player = $this->GetPlayerByToken($request)) == false)
             return $this->view("Invalid token", 400);
 
         $challenge = $this->getCurrentChallenge();
@@ -249,11 +242,11 @@ class WeeklychallengeController extends Controller
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallengeScore');
 
-        $scoreOrder = $challenge->getSmallerIsBetter ? 'ASC' : 'DESC';
+        $scoreOrder = $challenge->getSmallerIsBetter() ? 'ASC' : 'DESC';
 
         $qb = $repository->createQueryBuilder('wcs');
         $qb->orderBy('wcs.score', $scoreOrder)
-           ->where('wcs.challenge_id = ' . $challenge->getId())
+           ->where('wcs.weeklyChallenge = ' . $challenge->getId())
            ->setMaxResults(20);
 
 
@@ -265,8 +258,8 @@ class WeeklychallengeController extends Controller
             if($topScore->getPlayer()->getId() == $player->getId()){
                 $playerInResultSet = true;
             }
-            // TO json should take in account if it is a float or an int
-            $scores[] = $topScore->toJson($count);
+
+            $scores[] = $topScore->toJson($count, $challenge);
         }
 
         //Player not in top scores list. Find and add him to the results
@@ -277,18 +270,24 @@ class WeeklychallengeController extends Controller
             /*
              * $var Doctrine\DBAL\Driver\PDOStatement
              */
-            $result = $q->query("select *, FIND_IN_SET(score, ( SELECT GROUP_CONCAT( score ORDER BY score $scoreOrder) FROM weekly_challenge_score WHERE challenge_id = " . $challenge->getId() . ")) as rank FROM weekly_challenge_score where player_id=" . $player->GetId() . " AND challenge_id = " . $challenge->getId() . ";");
+
+            // If this starts to underperform, you could estimate the rank by looking at the score, and the score of 20th player.
+            $result = $q->query(
+                "select *, FIND_IN_SET(score, ( SELECT GROUP_CONCAT( score ORDER BY score $scoreOrder) FROM weekly_challenge_score WHERE challenge_id = " . $challenge->getId() . ")) as rank " . 
+                "FROM weekly_challenge_score wc INNER JOIN player p ON p.id = wc.player_id WHERE p.id=" . $player->GetId() . " AND wc.challenge_id = " . $challenge->getId() . ";");
             foreach($result as $value){
-                $scores[] = array('id' => intval($value['id']),
+                $scores[] = array(
+                    'rank' => intval($value['rank']),
+                    'score' => strval($challenge->getIsFloat() ? floatval($value['score']) : intval($value['score'])),
+                    'description' => $challenge->getDescription(),
+                    'player' => array('id' => intval($value['id']),
                                    'name' => $value['name'],
                                    'firstName' => $value['first_name'],
                                    'lastName' => $value['surname'],
                                    'fb_id' => $value['fb_id'],
-                                   'present_id' => intval($value['present_selected']),
                                    'distance' => intval($value['distance_best']),
-                                   'rank' => intval($value['rank']),
-                );
-
+                        )
+                    );
                 //should never be more than 1 result
                 break;
             }

@@ -134,4 +134,13 @@ class WeeklyChallengeScore extends BaseAuditableEntity
     {
         return $this->weeklyChallenge;
     }
+
+    public function toJson($count, $challenge){
+
+        return array('rank' => $count,
+            'score' => $challenge->getIsFloat() ? floatval($this->getScore()) : intval($this->getScore()),
+            'description' => $challenge->getDescription(),
+            'player' => $this->getPlayer()->toJson(true, false)
+        );
+    }
 }

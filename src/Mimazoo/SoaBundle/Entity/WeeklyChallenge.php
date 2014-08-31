@@ -40,6 +40,15 @@ class WeeklyChallenge extends BaseAuditableEntity
     protected $description;
 
     /**
+     * @var integer $type
+     *
+     * @ORM\Column(type="integer")
+     * @Groups({"always"})
+     */
+    protected $type;
+
+
+    /**
      * @var boolean $isCompleted
      *
      * @ORM\Column(type="boolean")

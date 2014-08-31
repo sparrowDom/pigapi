@@ -117,7 +117,6 @@ class PlayerController extends Controller
                                    'firstName' => $value['first_name'],
                                    'lastName' => $value['surname'],
                                    'fb_id' => $value['fb_id'],
-                                   'present_id' => intval($value['present_selected']),
                                    'distance' => intval($value['distance_best']),
                                    'rank' => intval($value['rank']),
                 );
