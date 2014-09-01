@@ -17,13 +17,11 @@ class WeeklyChallengeFixture extends AbstractFixture implements OrderedFixtureIn
         
         $weeklyChallenge = array();
         
-        /*$weeklyChallenge['first'] = new WeeklyChallenge();
+        $weeklyChallenge['first'] = new WeeklyChallenge();
         $weeklyChallenge['first']->setDescription('COLLECT THE MOST COINS ACROSS THE WHOLE WEEK!');
         $weeklyChallenge['first']->setType(1);
+        $weeklyChallenge['first']->setStartedOn(new \DateTime("now"));
 
-        $weeklyChallenge['second'] = new WeeklyChallenge();
-        $weeklyChallenge['second']->setDescription('DEFEAT THE MOST SNAILS ACROSS THE WEEK!');
-        $weeklyChallenge['second']->setType(2);*/
 
 
         foreach ($weeklyChallenge as $key => $wc) {

@@ -25,7 +25,8 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['mitja']->setSurname('Poljšak');
         $players['mitja']->setFirstName('Mitja');
         $players['mitja']->setDeviceAccessToken('deviceToken1');
-		$players['mitja']->setDistanceBest(-1);
+        $players['mitja']->setApplePushToken("%6E%E3%BB%33%E5%0A%05%67%FB%56%24%1E%92%4E%A7%55%0D%60%53%B0%FB%66%A6%0E%D7%66%38%2A%07%11%14%26");
+		$players['mitja']->setDistanceBest(0);
 
         $players['domen'] = new Player();
         $players['domen']->setFbId('608899282');
@@ -36,7 +37,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['domen']->setFirstName('Domen');
         $players['domen']->setIsSuperUser(true);
         $players['domen']->setDeviceAccessToken('deviceToken2');
-        $players['domen']->setDistanceBest(-1);
+        $players['domen']->setDistanceBest(0);
 
         $players['rick'] = new Player();
         $players['rick']->setFbId('100006462098682');
@@ -46,7 +47,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['rick']->setSurname('Wongsly');
         $players['rick']->setFirstName('Rick');
         $players['rick']->setDeviceAccessToken('deviceToken3');
-        $players['rick']->setDistanceBest(-1);
+        $players['rick']->setDistanceBest(0);
 
         $players['joe'] = new Player();
         $players['joe']->setFbId('100006480546572');
@@ -55,7 +56,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['joe']->setName('Joe Amfdhjedfegb Letuchysky');
         $players['joe']->setSurname('Letuchysky');
         $players['joe']->setFirstName('Joe');
-        $players['joe']->setDistanceBest(-1);
+        $players['joe']->setDistanceBest(0);
 
         $players['mike'] = new Player();
         $players['mike']->setFbId('100006469538852');
@@ -64,7 +65,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['mike']->setName('Mike Amfdfiechheb Letuchyescu');
         $players['mike']->setSurname('Letuchyescu');
         $players['mike']->setFirstName('Mike');
-        $players['mike']->setDistanceBest(-1);
+        $players['mike']->setDistanceBest(0);
 
         $players['donna'] = new Player();
         $players['donna']->setFbId('100006480426530');
@@ -73,7 +74,7 @@ class PlayerFixture extends AbstractFixture implements OrderedFixtureInterface
         $players['donna']->setName('Donna Amfdhjdbfecj Chengescumansteins');
         $players['donna']->setSurname('Chengescumansteins');
         $players['donna']->setFirstName('Donna');
-        $players['donna']->setDistanceBest(-1);
+        $players['donna']->setDistanceBest(0);
 
 		foreach ($players as $key => $player) {
 			$manager->persist($player);

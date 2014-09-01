@@ -38,7 +38,7 @@ class NotificationController extends Controller
     /**
      * @View(statusCode="204")
      */
-    public function postAction(Request $request)
+   /* public function postAction(Request $request)
     {
 
         $request = $this->getRequest();
@@ -53,14 +53,12 @@ class NotificationController extends Controller
         $notification->setApplePushToken($token);
 
         return $this->processNotification($notification);
-    }
+    }*/
 
     /**
      * Update item
-     *
-     * @param Player $player
      */
-    protected function processNotification( Notification $notification) {
+    /*protected function processNotification( Notification $notification) {
         $validator = $this->get('validator');
         $errors = $validator->validate($notification);
 
@@ -78,5 +76,5 @@ class NotificationController extends Controller
                 return $this->view($e->getMessage(), 400);
             }
         }
-    }
+    }*/
 }

@@ -48,7 +48,7 @@ class WeeklychallengeController extends Controller
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallenge');
 
-        $filter = $request->request->has("filter") ? $request->request->get("filter") : "all";
+        $filter = $request->query->get('filter', "all");
 
         $qb = $repository->createQueryBuilder('wc');
 
@@ -104,19 +104,22 @@ class WeeklychallengeController extends Controller
 
 
         if(($challenge = $this->getCurrentChallenge()) != false)
-            return array('success' => 'true', 'data' => array($challenge->toJson()));
+            return array('success' => 'true', 'data' => array($challenge));
         else
             return array('success' => 'true', 'data' => array());
     }
 
-    protected function getCurrentChallenge(){
+    protected function getCurrentChallenge($ignoreStartedOn = false){
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallenge');
 
         $qb = $repository->createQueryBuilder('wc');
-        $qb->where('wc.isCompleted=false')
+        $qb->where('wc.completedOn IS NULL')
            ->orderBy('wc.id', 'ASC')
            ->setMaxResults(1);
+
+        if($ignoreStartedOn == true)
+            $qb->andWhere('wc.startedOn IS NULL');
 
         $result = $qb->getQuery()->getResult();
         if(count($result) == 1)
@@ -134,17 +137,37 @@ class WeeklychallengeController extends Controller
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallenge');
 
-        $qb = $repository->createQueryBuilder('wc');
-        $qb->where('wc.isCompleted=false')
-           ->orderBy('wc.id', 'ASC')
-           ->setMaxResults(1);
+        // Current challenge is found complete it and send notifications
+        if(($oldChallenge = $this->getCurrentChallenge()) !== false){
+            $oldChallenge->setCompletedOn(new \DateTime("now"));
 
-        $result = $qb->getQuery()->getResult();
+            $this->notifyChallengeWinner($oldChallenge);
 
-        if(count($result) != 1)
-            return $this->view(array("success" => false, "error" => "Current challenge can not be found!"), 400);
+            $this->process($oldChallenge);
+            $this->container->get('logger')->info("Challenge id: " . $oldChallenge->getId() . " text: \"" . $oldChallenge->getDescription() . "\" completed." , get_defined_vars());
+        }
 
-        // TODO: Once notifications are in place so this also. 
+        if(($currentChallenge = $this->getCurrentChallenge(true)) == false)
+            return $this->view(array("success" => false, "error" => "Another challenge is not ready! Create a new one!"), 400);
+
+        $currentChallenge->setStartedOn(new \DateTime("now"));
+        
+        $this->notifyNewChallenge($currentChallenge);
+
+        $this->container->get('logger')->info("Challenge id: " . $currentChallenge->getId() . " text: \"" . $currentChallenge->getDescription() . "\" started." , get_defined_vars());
+        return $this->process($currentChallenge);
+    }
+
+    // TODO: needs implementation
+    // START IMPLEMENTING THIS SHAAAJT!!!
+        // EVERYTHING NEEDS MORE TESTING!
+    private function notifyChallengeWinner($weeklyChallenge) {
+        $this->sendMessageToAllPlayers("This weeks winner is MR JACK MAN!");
+    }
+
+    // TODO: needs implementation
+    private function notifyNewChallenge($wc) {
+
     }
 
      /**
@@ -227,6 +250,7 @@ class WeeklychallengeController extends Controller
                 throw new Exception("Invalid update strategy index: " . $strategy, 1);
                 break;
         }
+
         return $em->getConnection()->prepare($sql)->execute();
     }
 
@@ -304,10 +328,20 @@ class WeeklychallengeController extends Controller
         if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
             return $view;
 
+        $currentChallenge = $this->getCurrentChallenge();
+        $isFloat = $request->query->has('isFloat');
+
         $wc = new WeeklyChallenge();
         $wc->setDescription($request->get("description"));
         $wc->setType($request->get("type"));
+        $wc->setIsFloat($isFloat);
 
+        if($currentChallenge == false) {
+            $wc->setStartedOn(new \DateTime("now"));
+            $this->notifyNewChallenge($wc);
+        }
+        
+        $this->container->get('logger')->info("New challenge added to queue." , get_defined_vars());
         return $this->process($wc);
     }
 

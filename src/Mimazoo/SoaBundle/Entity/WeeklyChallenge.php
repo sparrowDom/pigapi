@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation\Groups;
  * Mimazoo\SoaBundle\Entity\Challenge
  *
  * @ORM\Entity
+ * @ORM\Table(indexes={@ORM\Index(name="complete_idx", columns={"completed_on"})})
  */
 class WeeklyChallenge extends BaseAuditableEntity
 {
@@ -34,7 +35,7 @@ class WeeklyChallenge extends BaseAuditableEntity
      * @Assert\Length(min = "1",
      *                max = "255",
      *                minMessage = "Name must be at least {{ limit }} characters long",
-     *                maxMessage = "Name must be less then {{ limit }} characters long")
+     *                maxMessage = "Name must be less than {{ limit }} characters long")
      * @Groups({"always"})
      */
     protected $description;
@@ -46,15 +47,6 @@ class WeeklyChallenge extends BaseAuditableEntity
      * @Groups({"always"})
      */
     protected $type;
-
-
-    /**
-     * @var boolean $isCompleted
-     *
-     * @ORM\Column(type="boolean")
-     * @Groups({"always"})
-     */
-    protected $isCompleted = false;
     
     /**
      * @var boolean $isFloat
@@ -143,29 +135,6 @@ class WeeklyChallenge extends BaseAuditableEntity
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Set isCompleted
-     *
-     * @param boolean $isCompleted
-     * @return WeeklyChallenge
-     */
-    public function setIsCompleted($isCompleted)
-    {
-        $this->isCompleted = $isCompleted;
-
-        return $this;
-    }
-
-    /**
-     * Get isCompleted
-     *
-     * @return boolean 
-     */
-    public function getIsCompleted()
-    {
-        return $this->isCompleted;
     }
 
     public function toJson(){

@@ -30,11 +30,31 @@ class Notification extends BaseAuditableEntity
     /**
      * @var string $applePushToken
      *
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"always"})
      */
     protected $applePushToken;
 
+    /**
+     * @var string $message
+     *
+     * @ORM\Column(type="string", length=160)
+     * @Assert\Length(min = "1",
+     *                max = "160",
+     *                minMessage = "APN message should be at least {{ limit }} characters long",
+     *                maxMessage = "APN message must be less than {{ limit }} characters long")
+     * @Groups({"always"})
+     */
+    protected $message;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Player")
+     * @Assert\NotBlank()
+     * @Assert\Valid(traverse=false)
+     * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
+     */
+    protected $player;
 
     /**
      * Get id
@@ -69,11 +89,49 @@ class Notification extends BaseAuditableEntity
         return $this->applePushToken;
     }
 
-    public function toJson(){
-        $notification = array('id' => $this->getId(),
-            'apple_token' => $this->getApplePushToken()
-        );
+    /**
+     * Set message
+     *
+     * @param string $message
+     * @return Notification
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
 
-        return $notification;
+        return $this;
+    }
+
+    /**
+     * Get message
+     *
+     * @return string 
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Set player
+     *
+     * @param \Mimazoo\SoaBundle\Entity\Player $player
+     * @return Notification
+     */
+    public function setPlayer(\Mimazoo\SoaBundle\Entity\Player $player = null)
+    {
+        $this->player = $player;
+
+        return $this;
+    }
+
+    /**
+     * Get player
+     *
+     * @return \Mimazoo\SoaBundle\Entity\Player 
+     */
+    public function getPlayer()
+    {
+        return $this->player;
     }
 }

@@ -24,6 +24,10 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Doctrine\DBAL\DBALException;
 use Doctrine\Common\Util\Debug;
 
+use RMS\PushNotificationsBundle\Message\iOSMessage;
+use Mimazoo\SoaBundle\Entity\Player;
+use Mimazoo\SoaBundle\Entity\Notification;
+
 
 class Controller extends FOSRestController implements ClassResourceInterface
 {
@@ -174,6 +178,59 @@ class Controller extends FOSRestController implements ClassResourceInterface
             return $this->view(array('success' => 'false', 'error' => 19, 'errorMsg' => 'User not authorized to perform action'), 403);
 
         return true;
+    }
+
+   	// Only if player has push notification token. Else skip it
+    protected function queuePushNotification($player, $message){
+    	$apnToken = $player->getApplePushToken();
+    	if ($apnToken == null || strlen($apnToken) < 5)
+    		return false; // Invalid or nonexisting token
+
+        $notification = new Notification();
+        $notification->setMessage($message);
+        $notification->setApplePushToken($player->getApplePushToken());
+        $notification->setPlayer($player);
+
+        $validator = $this->get('validator');
+        $errors = $validator->validate($notification);
+
+        if (count($errors) > 0)
+            $this->logError("Errors inserting push notification to DB: " . print_r($errors, true));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($notification);
+        try {
+            $em->flush();
+        } catch (DBALException  $e) {
+            $this->logError("Errors flushing push notification to DB: " . $e->getMessage());
+        }
+
+    }
+
+    // TODO: increase max execution time, since this might take a while
+    protected function sendMessageToAllPlayers($message) {
+    	$repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:Player');
+
+
+        $qb = $repository->createQueryBuilder('p');
+        $qb->where('p.applePushToken IS NOT NULL');
+
+        foreach($qb->getQuery()->getResult() as $player){
+            $this->queuePushNotification($player, $message);
+        }
+    }
+
+    protected function logInfo($message) {
+    	$this->container->get('logger')->info($message, get_defined_vars());
+    }
+
+    protected function logError($message) {
+    	$this->container->get('logger')->info($message, get_defined_vars());
+    }
+
+    protected function logWarning($message) {
+    	$this->container->get('logger')->warning($message, get_defined_vars());
     }
 
     protected function handleFacebookApiError(\FacebookApiException $exception, FacebookSessionPersistence $facebook, $token){

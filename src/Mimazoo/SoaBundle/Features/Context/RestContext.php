@@ -356,7 +356,7 @@ class RestContext extends BehatContext implements KernelAwareInterface
     /**
      * @Then /^the response data at (\d+) count "([^"]*)" property is "([^"]*)"$/
      */
-    public function theResponseDataAtCountHasProperty($count, $propertyName, $propertyValue)
+    public function theResponseDataAtCountIsProperty($count, $propertyName, $propertyValue)
     {
         $data = json_decode($this->_response->getBody(true));
 
@@ -371,7 +371,29 @@ class RestContext extends BehatContext implements KernelAwareInterface
                     print_r($data);
                     throw new \Exception('Property value mismatch! (given: '.$propertyValue.', match: '.$data->$propertyName.')');
                 }
-                return $data->$propertyName == $propertyValue;
+
+            } else {
+                throw new \Exception("Response data was empty\n" . $data);
+            }
+        } else {
+            throw new \Exception("Response was not JSON\n" . $this->_response->getBody(true));
+        }
+    }
+
+    /**
+     * @Then /^the response data at (\d+) count has propery "([^"]*)"$/
+     */
+    public function theResponseDataAtCountHasProperty($count, $propertyName)
+    {
+        $data = json_decode($this->_response->getBody(true));
+
+        if (!empty($data)) {
+            $data = $data->data[$count];
+            if (!empty($data)) {
+                if (!isset($data->$propertyName)) {
+                    print_r($data);
+                    throw new \Exception("Property '".$propertyName."' is not set!\n");
+                }
             } else {
                 throw new \Exception("Response data was empty\n" . $data);
             }
