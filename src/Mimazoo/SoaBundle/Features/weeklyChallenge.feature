@@ -1,4 +1,5 @@
 Feature: WeeklyChallenge controller
+   #// EVERYTHING NEEDS MORE TESTING!
 
 Scenario: Create a new weekly challenge
   Given that I want to make a new "WeeklyChallenge"

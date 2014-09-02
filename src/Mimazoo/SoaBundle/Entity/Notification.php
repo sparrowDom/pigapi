@@ -13,6 +13,7 @@ use JMS\Serializer\Annotation\Groups;
  * Mimazoo\SoaBundle\Entity\Notification
  *
  * @ORM\Entity
+ * @ORM\Table(indexes={@ORM\Index(name="notification_sent_id_idx", columns={"sent_on", "id"})})
  */
 class Notification extends BaseAuditableEntity
 {
@@ -55,6 +56,14 @@ class Notification extends BaseAuditableEntity
      * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
      */
     protected $player;
+
+    /**
+     * @var \DateTime $sentOn
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"always"})
+     */
+    protected $sentOn = null;
 
     /**
      * Get id
@@ -133,5 +142,28 @@ class Notification extends BaseAuditableEntity
     public function getPlayer()
     {
         return $this->player;
+    }
+
+    /**
+     * Set sentOn
+     *
+     * @param \DateTime $sentOn
+     * @return Notification
+     */
+    public function setSentOn($sentOn)
+    {
+        $this->sentOn = $sentOn;
+
+        return $this;
+    }
+
+    /**
+     * Get sentOn
+     *
+     * @return \DateTime 
+     */
+    public function getSentOn()
+    {
+        return $this->sentOn;
     }
 }

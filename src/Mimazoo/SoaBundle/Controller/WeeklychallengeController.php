@@ -158,16 +158,31 @@ class WeeklychallengeController extends Controller
         return $this->process($currentChallenge);
     }
 
-    // TODO: needs implementation
-    // START IMPLEMENTING THIS SHAAAJT!!!
-        // EVERYTHING NEEDS MORE TESTING!
+    // False if no players playing
+    private function getWeeklyChallengeWinner($weeklyChallenge){
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:WeeklyChallengeScore');
+
+        $qb = $repository->createQueryBuilder('wcs');
+        $qb->where('wcs.weeklyChallenge = ' . $weeklyChallenge->getId())
+           ->orderBy('wcs.score', $weeklyChallenge->getSmallerIsBetter() ? 'ASC' : 'DESC')
+           ->setMaxResults(1);
+
+        $result = $qb->getQuery()->getResult();
+        if(count($result) == 1)
+            return $result[0]->getPlayer();
+        return false;
+    }
+
     private function notifyChallengeWinner($weeklyChallenge) {
-        $this->sendMessageToAllPlayers("This weeks winner is MR JACK MAN!");
+        $winner = $this->getWeeklyChallengeWinner($weeklyChallenge);
+        if($winner != false)
+            $this->sendMessageToAllPlayers("Oink! Winner of Weekly Challenge is " . $winner->getName() . ". Congratulations!");
     }
 
     // TODO: needs implementation
     private function notifyNewChallenge($wc) {
-
+       $this->sendMessageToAllPlayers("Oink! New Weekly Challenge has just started, try to compete for the High Scores!");
     }
 
      /**

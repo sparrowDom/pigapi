@@ -14,9 +14,10 @@ use JMS\Serializer\Annotation\Groups;
  *
  * @ORM\Entity
  * @ORM\Table(indexes={
- *  @ORM\Index(name="challenge_id_idx", columns={"challenge_id"}),
- *  @ORM\Index(name="challenge_score_id_idx", columns={"challenge_id", "score"})
- *  }, uniqueConstraints={@ORM\UniqueConstraint(name="player_challenge_id", columns={"player_id", "challenge_id"})}
+ *  @ORM\Index(name="weekly_challenge_id_idx", columns={"challenge_id"}),
+ *  @ORM\Index(name="weekly_challenge_score_id_idx", columns={"challenge_id", "score"}),
+ *  @ORM\Index(name="weekly_challenge_score_idx", columns={"score"})
+ *  }, uniqueConstraints={@ORM\UniqueConstraint(name="weekly_challenge_player_challenge_id", columns={"player_id", "challenge_id"})}
  * )
  */
 class WeeklyChallengeScore extends BaseAuditableEntity
