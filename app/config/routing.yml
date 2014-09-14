@@ -1,7 +1,12 @@
-mimazoo_soa:
+¸mimazoo_soa:
     type:     rest
     resource: "@MimazooSoaBundle/Resources/config/routing.yml"
 
 player_login:
     path:      /players/login
     defaults:  { _controller: MimazooSoaBundle:Player:login }
+
+health_check:
+    pattern: /health
+    defaults: { _controller: MimazooSoaBundle:Health:master }
+
