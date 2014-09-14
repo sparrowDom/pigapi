@@ -180,47 +180,6 @@ class Controller extends FOSRestController implements ClassResourceInterface
         return true;
     }
 
-   	// Only if player has push notification token. Else skip it
-    protected function queuePushNotification($player, $message){
-    	$apnToken = $player->getApplePushToken();
-    	if ($apnToken == null || strlen($apnToken) < 5)
-    		return false; // Invalid or nonexisting token
-
-        $notification = new Notification();
-        $notification->setMessage($message);
-        $notification->setApplePushToken($player->getApplePushToken());
-        $notification->setPlayer($player);
-
-        $validator = $this->get('validator');
-        $errors = $validator->validate($notification);
-
-        if (count($errors) > 0)
-            $this->logError("Errors inserting push notification to DB: " . print_r($errors, true));
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($notification);
-        try {
-            $em->flush();
-        } catch (DBALException  $e) {
-            $this->logError("Errors flushing push notification to DB: " . $e->getMessage());
-        }
-
-    }
-
-    // TODO: increase max execution time, since this might take a while
-    protected function sendMessageToAllPlayers($message) {
-    	$repository = $this->getDoctrine()
-            ->getRepository('MimazooSoaBundle:Player');
-
-
-        $qb = $repository->createQueryBuilder('p');
-        $qb->where('p.applePushToken IS NOT NULL');
-
-        foreach($qb->getQuery()->getResult() as $player){
-            $this->queuePushNotification($player, $message);
-        }
-    }
-
     protected function logInfo($message) {
     	$this->container->get('logger')->info($message, get_defined_vars());
     }

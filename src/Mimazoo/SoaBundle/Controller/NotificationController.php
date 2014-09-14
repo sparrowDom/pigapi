@@ -35,6 +35,29 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class NotificationController extends Controller
 {
 
+
+    /**
+     * @View(statusCode="200")
+     */
+    public function cgetAction(Request $request){
+        if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
+            return $view;
+
+        $repository = $this->getDoctrine()
+            ->getRepository('MimazooSoaBundle:Notification');
+
+        $result = $repository->findAll();
+        return array('success' => 'true', 'data' => $result);
+    }
+
+     /**
+     * @View(statusCode="200")
+     */
+    public function getAction(Request $request){
+        //TODO:
+    }
+
+
     /**
      * @View(statusCode="204")
      */

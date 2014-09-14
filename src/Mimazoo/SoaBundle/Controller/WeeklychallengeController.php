@@ -23,14 +23,12 @@ use FOS\FacebookBundle\Facebook\FacebookSessionPersistence;
 use Mimazoo\SoaBundle\Entity\Player;
 use Mimazoo\SoaBundle\Entity\Challenge;
 use Mimazoo\SoaBundle\Entity\WeeklyChallenge;
-use Mimazoo\SoaBundle\Hal\Hal;
 
 use Mimazoo\SoaBundle\Form\Type\PlayerType;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 use Symfony\Component\Translation\Tests\String;
-use RMS\PushNotificationsBundle\Message\iOSMessage;
 
 
 class WeeklychallengeController extends Controller
@@ -109,6 +107,7 @@ class WeeklychallengeController extends Controller
             return array('success' => 'true', 'data' => array());
     }
 
+    // WARNING (!) YOU ALTER THIS CODE, ALSO ALTER IT IN ChangeChallengeCommand.php
     protected function getCurrentChallenge($ignoreStartedOn = false){
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallenge');
@@ -131,58 +130,11 @@ class WeeklychallengeController extends Controller
      * @View(statusCode="204")
      */
     public function postCurrentCompleteAction(Request $request){
-        if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
-            return $view;
+      if(true !== ($view = $this->validatePlayerIsSuperUser($request)))
+          return $view;
 
-        $repository = $this->getDoctrine()
-            ->getRepository('MimazooSoaBundle:WeeklyChallenge');
-
-        // Current challenge is found complete it and send notifications
-        if(($oldChallenge = $this->getCurrentChallenge()) !== false){
-            $oldChallenge->setCompletedOn(new \DateTime("now"));
-
-            $this->notifyChallengeWinner($oldChallenge);
-
-            $this->process($oldChallenge);
-            $this->container->get('logger')->info("Challenge id: " . $oldChallenge->getId() . " text: \"" . $oldChallenge->getDescription() . "\" completed." , get_defined_vars());
-        }
-
-        if(($currentChallenge = $this->getCurrentChallenge(true)) == false)
-            return $this->view(array("success" => false, "error" => "Another challenge is not ready! Create a new one!"), 400);
-
-        $currentChallenge->setStartedOn(new \DateTime("now"));
-        
-        $this->notifyNewChallenge($currentChallenge);
-
-        $this->container->get('logger')->info("Challenge id: " . $currentChallenge->getId() . " text: \"" . $currentChallenge->getDescription() . "\" started." , get_defined_vars());
-        return $this->process($currentChallenge);
-    }
-
-    // False if no players playing
-    private function getWeeklyChallengeWinner($weeklyChallenge){
-        $repository = $this->getDoctrine()
-            ->getRepository('MimazooSoaBundle:WeeklyChallengeScore');
-
-        $qb = $repository->createQueryBuilder('wcs');
-        $qb->where('wcs.weeklyChallenge = ' . $weeklyChallenge->getId())
-           ->orderBy('wcs.score', $weeklyChallenge->getSmallerIsBetter() ? 'ASC' : 'DESC')
-           ->setMaxResults(1);
-
-        $result = $qb->getQuery()->getResult();
-        if(count($result) == 1)
-            return $result[0]->getPlayer();
-        return false;
-    }
-
-    private function notifyChallengeWinner($weeklyChallenge) {
-        $winner = $this->getWeeklyChallengeWinner($weeklyChallenge);
-        if($winner != false)
-            $this->sendMessageToAllPlayers("Oink! Winner of Weekly Challenge is " . $winner->getName() . ". Congratulations!");
-    }
-
-    // TODO: needs implementation
-    private function notifyNewChallenge($wc) {
-       $this->sendMessageToAllPlayers("Oink! New Weekly Challenge has just started, try to compete for the High Scores!");
+      $wcService = $this->get("mimazoo_soa.weekly_challenge");
+      return $wcService->completeChallenge();
     }
 
      /**
@@ -366,6 +318,7 @@ class WeeklychallengeController extends Controller
      * @param WeeklyChallenge
      *
      */
+    //You change this function also change it in challengeCommand
     protected function process( WeeklyChallenge $challenge) {
         $new = (NULL === $challenge->getId())?true:false;
 

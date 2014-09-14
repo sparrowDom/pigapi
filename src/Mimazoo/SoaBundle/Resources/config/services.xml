@@ -36,6 +36,18 @@
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <tag name="form.type" alias="point" />
         </service>
+
+        <service id="mimazoo_soa.shared" class="Mimazoo\SoaBundle\Service\SharedService">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="validator"/>
+        </service>
+
+        <service id="mimazoo_soa.weekly_challenge" class="Mimazoo\SoaBundle\Service\WeeklyChallengeService">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="mimazoo_soa.shared"/>
+            <argument type="service" id="validator"/>
+            <argument type="service" id="logger"/>
+        </service>
         
         <service id="mimazoo_soa.type.custom_collection" class="Mimazoo\SoaBundle\Form\Type\CustomCollectionType">
             <argument type="service" id="doctrine.orm.entity_manager"/>

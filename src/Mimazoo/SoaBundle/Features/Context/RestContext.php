@@ -11,6 +11,13 @@ use Guzzle\Common\Event;
 use Mimazoo\SoaBundle\ValueObject\Polygon;
 use Mimazoo\SoaBundle\ValueObject\Point;
 
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
+use Behat\Gherkin\Node\PyStringNode;
+
+use Mimazoo\SoaBundle\Command\NotificationCommand;
+use Mimazoo\SoaBundle\Command\ChangeChallengeCommand;
+
 require_once 'PHPUnit/Autoload.php';
 require_once 'PHPUnit/Framework/Assert/Functions.php';
 
@@ -31,6 +38,9 @@ class RestContext extends BehatContext implements KernelAwareInterface
     private $_parameters			= array();
 
     private $kernel;
+
+    private $application;
+    private $testCommand;
 
     /**
      * Initializes context.
@@ -57,6 +67,24 @@ class RestContext extends BehatContext implements KernelAwareInterface
     }
 
     /**
+     * @When /^I run "([^"]*)" command$/
+     */
+    public function iRunCommand($name)
+    {
+        $command = $this->application->find($name);
+        $this->testCommand = new CommandTester($command);
+        $this->testCommand->execute(array('command' => $command->getName()));
+    }
+
+    /**
+     * @Then /^I should see$/
+     */
+    public function iShouldSee(PyStringNode $string)
+    {
+        assertSame($string->getRaw(), $this->testCommand->getDisplay());
+    }
+
+    /**
      * Sets HttpKernel instance.
      * This method will be automatically called by Symfony2Extension ContextInitializer.
      *
@@ -65,6 +93,9 @@ class RestContext extends BehatContext implements KernelAwareInterface
     public function setKernel(KernelInterface $kernel)
     {
     	$this->kernel = $kernel;
+        $this->application = new Application($kernel);
+        $this->application->add(new NotificationCommand());
+        $this->application->add(new ChangeChallengeCommand());
     }
 
     public function getParameter($name)

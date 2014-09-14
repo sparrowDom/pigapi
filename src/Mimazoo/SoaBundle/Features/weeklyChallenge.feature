@@ -81,11 +81,19 @@ Scenario: Post an additive score to the challenge
   Then the response data is an array that has "1" items
   Then the response data at 0 count "score" property is "30"
 
-Scenario: Complete coins challenge and post to furthest run
-  Given that I want to update a "WeeklyChallenge"
+Scenario: Complete coins challenge and post to furthest run (with console command instead of post to controller)
+  When I run "weeklyChallenge:change" command
+  Then I should see
+  """
+  New challenge started
+  """
+
+  Given that I want to find a "Notification"
   And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
-  When I request "/weeklychallenge/current/complete"
-  Then the response status code should be 204
+  When I request "/notifications"
+  Then the response status code should be 200
+  Then the response data is an array that has "4" items
+
 
   Given that I want to update a "WeeklyChallengeScore"
   And that its "distance" is "400"
@@ -128,6 +136,12 @@ Scenario: Complete distance challenge and post to wolf defeat time
   And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
   When I request "/weeklychallenge/current/complete"
   Then the response status code should be 204
+
+  Given that I want to find a "Notification"
+  And that query parameter's "token" value is "CAAFM6NnZBvQoBAJ9JyfTlzJurAueMa1CZC19xhRBp4sKCHs6YSrKHSZBGTiBfsoIIWu0neCoQs5mqonAATsYuqDVZBArGkHuZBeeB9qKBPNP7k73Qg9UuQ6SIC70QdZBZCiG2IKNywHhxMl08MdZCs4A6ZAQOvW4fdUTYMByKwmW0RDQvEKp6jZCFY"
+  When I request "/notifications"
+  Then the response status code should be 200
+  Then the response data is an array that has "8" items
 
   Given that I want to update a "WeeklyChallengeScore"
   And that its "wolfDefeatTime" is "10.5"
