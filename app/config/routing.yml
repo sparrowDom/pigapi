@@ -1,4 +1,4 @@
-¸mimazoo_soa:
+mimazoo_soa:
     type:     rest
     resource: "@MimazooSoaBundle/Resources/config/routing.yml"
 
