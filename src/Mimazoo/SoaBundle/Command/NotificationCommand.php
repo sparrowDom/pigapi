@@ -43,10 +43,10 @@ class NotificationCommand extends ContainerAwareCommand
            ->orderBy('n.id', 'ASC')
            ->setMaxResults($batchSize);
 
+        $shared = $this->getContainer()->get("mimazoo_soa.shared");
         $result = $qb->getQuery()->getResult();
         foreach ($result as $notification) {
-            $this->sendOneNotification($notification);
-            $notification->setSentOn(new \DateTime("now"));
+            $shared->sendOneNotification($notification);
             echo "Sending out message: " . $notification->getMessage() .  PHP_EOL;
         }
 
@@ -54,19 +54,6 @@ class NotificationCommand extends ContainerAwareCommand
         $em->flush($result);
 
         return false;
-    }
-
-    protected function sendOneNotification($notification) {
-        if(strlen($notification->getPlayer()->getApplePushToken()) > 5){
-            //limit is 100 characters
-            $message = new iOSMessage();
-            $message->setMessage($notification->getMessage());
-            $message->setAPSSound("default");
-            $message->setDeviceIdentifier(str_replace('%', '', $notification->getPlayer()->getApplePushToken()));
-            $this->getContainer()->get('rms_push_notifications')->send($message);
-
-            $this->getContainer()->get('logger')->info('Notifying player id: ' . $notification->getPlayer()->getId() . " message: " . $notification->getMessage() , get_defined_vars());
-        }
     }
     
 }

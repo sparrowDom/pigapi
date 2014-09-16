@@ -4,17 +4,22 @@ namespace Mimazoo\SoaBundle\Service;
 use Symfony\Component\Validator\Validator;
 use Doctrine\ORM\EntityManager;
 use RMS\PushNotificationsBundle\Message\iOSMessage;
-
+use RMS\PushNotificationsBundle\Service\Notifications;
 use Mimazoo\SoaBundle\Entity\Notification;
+use Symfony\Bridge\Monolog\Logger;
 
 class SharedService
 {
     protected $em;
     protected $validator;
+    protected $logger;
+    protected $pushNotifications;
 
-    public function __construct(EntityManager $em, Validator $validator) {
+    public function __construct(EntityManager $em, Validator $validator, Logger $logger, Notifications $pushNotifications) {
         $this->em = $em;
         $this->validator = $validator;
+        $this->logger = $logger;
+        $this->pushNotifications = $pushNotifications;
     }
 
     // TODO: increase max execution time, since this might take a while
@@ -51,9 +56,24 @@ class SharedService
         $this->em->persist($notification);
         try {
             $this->em->flush();
+            return $notification;
         } catch (DBALException  $e) {
             $this->logError("Errors flushing push notification to DB: " . $e->getMessage());
         }
 
+    }
+
+    public function sendOneNotification($notification) {
+        if(strlen($notification->getPlayer()->getApplePushToken()) > 5){
+            //limit is 100 characters
+            $message = new iOSMessage();
+            $message->setMessage($notification->getMessage());
+            $message->setAPSSound("default");
+            $message->setDeviceIdentifier(str_replace('%', '', $notification->getPlayer()->getApplePushToken()));
+            $this->pushNotifications->send($message);
+
+            $this->logger->info('Notifying player id: ' . $notification->getPlayer()->getId() . " message: " . $notification->getMessage() , get_defined_vars());
+            $notification->setSentOn(new \DateTime("now"));
+        }
     }
 }
