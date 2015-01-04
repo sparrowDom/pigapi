@@ -305,7 +305,8 @@ class WeeklychallengeController extends Controller
 
         if($currentChallenge == false) {
             $wc->setStartedOn(new \DateTime("now"));
-            $this->notifyNewChallenge($wc);
+            $wcService = $this->get("mimazoo_soa.weekly_challenge");
+            $wcService->notifyNewChallenge($wc);
         }
         
         $this->container->get('logger')->info("New challenge added to queue." , get_defined_vars());
