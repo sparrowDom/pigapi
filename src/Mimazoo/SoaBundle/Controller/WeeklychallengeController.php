@@ -230,6 +230,9 @@ class WeeklychallengeController extends Controller
 
         $challenge = $this->getCurrentChallenge();
 
+        if(($challenge = $this->getCurrentChallenge()) === false)
+            return array('success' => 'false', 'error' => 22, 'errorMsg' => 'There is no active weekly challenge');
+
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallengeScore');
 
