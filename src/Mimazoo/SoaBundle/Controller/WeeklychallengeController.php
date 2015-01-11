@@ -165,15 +165,15 @@ class WeeklychallengeController extends Controller
         if($type == 1)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("coins", 0)), 1);
         else if($type == 2)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 1, "m");
         else if($type == 3)
             $this->processScoreWithStrategy($player, intval($request->request->get("enemiesKill", 0)), intval($request->request->get("coins", 0)), 2);
         else if($type == 4)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 2, "m");
         else if($type == 5)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("enemiesKill", 0)), 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("enemiesKill", 0)), 1, "m");
         else if($type == 6)
-            $this->processScoreWithStrategy($player, $challenge, floatval($request->request->get("wolfDefeatTime", 10)), 3);
+            $this->processScoreWithStrategy($player, $challenge, floatval($request->request->get("wolfDefeatTime", 10)), 3, "s");
         else if($type == 7)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("beesCaught", 0)), 1);
         else if($type == 8)
@@ -181,7 +181,7 @@ class WeeklychallengeController extends Controller
         else if($type == 9)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("runBonusLevels", 0)), 1);
         else if($type == 10)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distancePiggyLost", 0)), 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distancePiggyLost", 0)), 2, "m");
         else if($type == 11)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("powerupsCollected", 0)), 1);
         else if($type == 12)
@@ -198,10 +198,10 @@ class WeeklychallengeController extends Controller
      *
      * returns true on success and false on failure
      */
-    protected function processScoreWithStrategy($player, $challenge, $score, $strategy){
+    protected function processScoreWithStrategy($player, $challenge, $score, $strategy, $scorePostfix = ""){
         $score = floatval($score); // No sql injections please :)
         $em = $this->getDoctrine()->getManager();
-        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . ", player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . ", updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
+        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . ", player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . ", post_fix=\"$scorePostfix\", updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
         switch ($strategy) {
             case 1:
                 $sql .= " score = score + " . $score;
