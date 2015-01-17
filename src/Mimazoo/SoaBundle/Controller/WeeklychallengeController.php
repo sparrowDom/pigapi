@@ -201,7 +201,7 @@ class WeeklychallengeController extends Controller
     protected function processScoreWithStrategy($player, $challenge, $score, $strategy, $scorePostfix = ""){
         $score = floatval($score); // No sql injections please :)
         $em = $this->getDoctrine()->getManager();
-        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . ", player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . ", post_fix=\"$scorePostfix\", updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
+        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . ", player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . ", post_fix='$scorePostfix', updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
         switch ($strategy) {
             case 1:
                 $sql .= " score = score + " . $score;
@@ -269,7 +269,9 @@ class WeeklychallengeController extends Controller
             $result = $q->query(
                 "select *, FIND_IN_SET(score, ( SELECT GROUP_CONCAT( score ORDER BY score $scoreOrder) FROM weekly_challenge_score WHERE challenge_id = " . $challenge->getId() . ")) as rank " . 
                 "FROM weekly_challenge_score wc INNER JOIN player p ON p.id = wc.player_id WHERE p.id=" . $player->GetId() . " AND wc.challenge_id = " . $challenge->getId() . ";");
-            foreach($result as $value){
+            // Player has not participated in a weekly challenge yet
+            if ($result->rowCount() == 1) {
+                foreach($result as $value){
                 $scores[] = array(
                     'rank' => intval($value['rank']),
                     'score' => strval($challenge->getIsFloat() ? floatval($value['score']) : intval($value['score'])),
@@ -280,10 +282,34 @@ class WeeklychallengeController extends Controller
                                    'lastName' => $value['surname'],
                                    'fb_id' => $value['fb_id'],
                                    'distance' => intval($value['distance_best']),
-                        )
-                    );
-                //should never be more than 1 result
-                break;
+                            )
+                        );
+                    //should never be more than 1 result
+                    break;
+                }
+            }
+            else {
+                $result = $q->query(
+                "select *, (select count(*) from player) as rank, -1 as score " . 
+                "FROM weekly_challenge c INNER JOIN player p ON p.id = {$player->GetId()} WHERE c.id = " . $challenge->getId() . ";");
+
+                foreach($result as $value){
+                 $scores[] = array(
+                    'rank' => intval($value['rank']),
+                    'score' => strval($challenge->getIsFloat() ? floatval($value['score']) : intval($value['score'])),
+                    'description' => $challenge->getDescription(),
+                    'player' => array('id' => intval($value['id']),
+                                   'name' => $value['name'],
+                                   'firstName' => $value['first_name'],
+                                   'lastName' => $value['surname'],
+                                   'fb_id' => $value['fb_id'],
+                                   'distance' => intval($value['distance_best']),
+                            )
+                        );
+                    //should never be more than 1 result
+                    break;
+                }
+
             }
         }
 
