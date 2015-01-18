@@ -167,7 +167,7 @@ class WeeklychallengeController extends Controller
         else if($type == 2)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 1, "m");
         else if($type == 3)
-            $this->processScoreWithStrategy($player, intval($request->request->get("enemiesKill", 0)), intval($request->request->get("coins", 0)), 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("coins", 0)), 2);
         else if($type == 4)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 2, "m");
         else if($type == 5)
