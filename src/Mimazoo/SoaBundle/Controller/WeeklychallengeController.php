@@ -269,13 +269,14 @@ class WeeklychallengeController extends Controller
             $result = $q->query(
                 "select *, FIND_IN_SET(score, ( SELECT GROUP_CONCAT( score ORDER BY score $scoreOrder) FROM weekly_challenge_score WHERE challenge_id = " . $challenge->getId() . ")) as rank " . 
                 "FROM weekly_challenge_score wc INNER JOIN player p ON p.id = wc.player_id WHERE p.id=" . $player->GetId() . " AND wc.challenge_id = " . $challenge->getId() . ";");
-            // Player has not participated in a weekly challenge yet
+
             if ($result->rowCount() == 1) {
                 foreach($result as $value){
                 $scores[] = array(
                     'rank' => intval($value['rank']),
                     'score' => strval($challenge->getIsFloat() ? floatval($value['score']) : intval($value['score'])),
                     'description' => $challenge->getDescription(),
+                    'postFix' => $value['post_fix'],
                     'player' => array('id' => intval($value['id']),
                                    'name' => $value['name'],
                                    'firstName' => $value['first_name'],
@@ -288,6 +289,7 @@ class WeeklychallengeController extends Controller
                     break;
                 }
             }
+            // Player has not participated in a weekly challenge yet
             else {
                 $result = $q->query(
                 "select *, (select count(*) from player) as rank, -1 as score " . 
@@ -298,6 +300,7 @@ class WeeklychallengeController extends Controller
                     'rank' => intval($value['rank']),
                     'score' => strval($challenge->getIsFloat() ? floatval($value['score']) : intval($value['score'])),
                     'description' => $challenge->getDescription(),
+                    'postFix' => "",
                     'player' => array('id' => intval($value['id']),
                                    'name' => $value['name'],
                                    'firstName' => $value['first_name'],
