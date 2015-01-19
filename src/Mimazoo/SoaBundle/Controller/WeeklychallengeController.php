@@ -173,7 +173,7 @@ class WeeklychallengeController extends Controller
         else if($type == 5)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("enemiesKill", 0)), 1, "m");
         else if($type == 6){
-            $wolfDefeatTime = floatval($request->request->get("wolfDefeatTime", 10);
+            $wolfDefeatTime = floatval($request->request->get("wolfDefeatTime", 10));
             if($wolfDefeatTime != 10)
                 $this->processScoreWithStrategy($player, $challenge, floatval($request->request->get("wolfDefeatTime", 10)), 3, "s");
         }
