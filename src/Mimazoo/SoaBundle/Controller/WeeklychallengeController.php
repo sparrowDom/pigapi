@@ -169,15 +169,18 @@ class WeeklychallengeController extends Controller
         if($type == 1)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("coins", 0)), 1);
         else if($type == 2)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 1);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 1, "m");
         else if($type == 3)
-            $this->processScoreWithStrategy($player, intval($request->request->get("enemiesKill", 0)), intval($request->request->get("coins", 0)), 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("coins", 0)), 2);
         else if($type == 4)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distance", 0)), 2, "m");
         else if($type == 5)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("enemiesKill", 0)), 1);
-        else if($type == 6)
-            $this->processScoreWithStrategy($player, $challenge, floatval($request->request->get("wolfDefeatTime", 10)), 3);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("enemiesKill", 0)), 1, "m");
+        else if($type == 6){
+            $wolfDefeatTime = floatval($request->request->get("wolfDefeatTime", 10));
+            if($wolfDefeatTime != 10)
+                $this->processScoreWithStrategy($player, $challenge, floatval($request->request->get("wolfDefeatTime", 10)), 3, "s");
+        }
         else if($type == 7)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("beesCaught", 0)), 1);
         else if($type == 8)
@@ -185,7 +188,7 @@ class WeeklychallengeController extends Controller
         else if($type == 9)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("runBonusLevels", 0)), 1);
         else if($type == 10)
-            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distancePiggyLost", 0)), 2);
+            $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("distancePiggyLost", 0)), 2, "m");
         else if($type == 11)
             $this->processScoreWithStrategy($player, $challenge, intval($request->request->get("powerupsCollected", 0)), 1);
         else if($type == 12)
@@ -202,10 +205,10 @@ class WeeklychallengeController extends Controller
      *
      * returns true on success and false on failure
      */
-    protected function processScoreWithStrategy($player, $challenge, $score, $strategy){
+    protected function processScoreWithStrategy($player, $challenge, $score, $strategy, $scorePostfix = ""){
         $score = floatval($score); // No sql injections please :)
         $em = $this->getDoctrine()->getManager();
-        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . ", player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . ", updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
+        $sql = "INSERT INTO weekly_challenge_score SET score=" . $score . ", player_id=" . $player->getId() . ", challenge_id=" . $challenge->getId() . ", post_fix='$scorePostfix', updated = NOW(), created = NOW() ON DUPLICATE KEY UPDATE ";
         switch ($strategy) {
             case 1:
                 $sql .= " score = score + " . $score;
@@ -233,6 +236,9 @@ class WeeklychallengeController extends Controller
             return $this->view("Invalid token", 400);
 
         $challenge = $this->getCurrentChallenge();
+
+        if(($challenge = $this->getCurrentChallenge()) === false)
+            return array('success' => 'false', 'error' => 22, 'errorMsg' => 'There is no active weekly challenge');
 
         $repository = $this->getDoctrine()
             ->getRepository('MimazooSoaBundle:WeeklyChallengeScore');
@@ -270,21 +276,50 @@ class WeeklychallengeController extends Controller
             $result = $q->query(
                 "select *, FIND_IN_SET(score, ( SELECT GROUP_CONCAT( score ORDER BY score $scoreOrder) FROM weekly_challenge_score WHERE challenge_id = " . $challenge->getId() . ")) as rank " . 
                 "FROM weekly_challenge_score wc INNER JOIN player p ON p.id = wc.player_id WHERE p.id=" . $player->GetId() . " AND wc.challenge_id = " . $challenge->getId() . ";");
-            foreach($result as $value){
+
+            if ($result->rowCount() == 1) {
+                foreach($result as $value){
                 $scores[] = array(
                     'rank' => intval($value['rank']),
                     'score' => strval($challenge->getIsFloat() ? floatval($value['score']) : intval($value['score'])),
                     'description' => $challenge->getDescription(),
+                    'postFix' => $value['post_fix'],
                     'player' => array('id' => intval($value['id']),
                                    'name' => $value['name'],
                                    'firstName' => $value['first_name'],
                                    'lastName' => $value['surname'],
                                    'fb_id' => $value['fb_id'],
                                    'distance' => intval($value['distance_best']),
-                        )
-                    );
-                //should never be more than 1 result
-                break;
+                            )
+                        );
+                    //should never be more than 1 result
+                    break;
+                }
+            }
+            // Player has not participated in a weekly challenge yet
+            else {
+                $result = $q->query(
+                "select *, (select count(*) from player) as rank, -1 as score " . 
+                "FROM weekly_challenge c INNER JOIN player p ON p.id = {$player->GetId()} WHERE c.id = " . $challenge->getId() . ";");
+
+                foreach($result as $value){
+                 $scores[] = array(
+                    'rank' => intval($value['rank']),
+                    'score' => strval($challenge->getIsFloat() ? floatval($value['score']) : intval($value['score'])),
+                    'description' => $challenge->getDescription(),
+                    'postFix' => "",
+                    'player' => array('id' => intval($value['id']),
+                                   'name' => $value['name'],
+                                   'firstName' => $value['first_name'],
+                                   'lastName' => $value['surname'],
+                                   'fb_id' => $value['fb_id'],
+                                   'distance' => intval($value['distance_best']),
+                            )
+                        );
+                    //should never be more than 1 result
+                    break;
+                }
+
             }
         }
 

@@ -57,6 +57,17 @@ class WeeklyChallengeScore extends BaseAuditableEntity
      */
     protected $weeklyChallenge;
 
+
+
+    /**
+     * @var string $postFix
+     *
+     * @ORM\Column(type="string", length=20)
+     * @Groups({"always"})
+     */
+    protected $postFix;
+
+
     /**
      * Get id
      *
@@ -141,7 +152,31 @@ class WeeklyChallengeScore extends BaseAuditableEntity
         return array('rank' => $count,
             'score' => $challenge->getIsFloat() ? floatval($this->getScore()) : intval($this->getScore()),
             'description' => $challenge->getDescription(),
+            'postFix' => $this->getPostFix(),
             'player' => $this->getPlayer()->toJson(true, false)
         );
+    }
+
+    /**
+     * Set postFix
+     *
+     * @param string $postFix
+     * @return WeeklyChallengeScore
+     */
+    public function setPostFix($postFix)
+    {
+        $this->postFix = $postFix;
+
+        return $this;
+    }
+
+    /**
+     * Get postFix
+     *
+     * @return string 
+     */
+    public function getPostFix()
+    {
+        return $this->postFix;
     }
 }
