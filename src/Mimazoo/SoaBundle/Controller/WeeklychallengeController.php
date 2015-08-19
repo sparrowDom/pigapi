@@ -106,7 +106,9 @@ class WeeklychallengeController extends Controller
 
 
         if(($challenge = $this->getCurrentChallenge()) != false)
-            return array('success' => 'true', 'data' => array($challenge));
+            return array('success' => 'true', 
+                         'serverTime' => new \DateTime(),
+                         'data' => array($challenge));
         else
             return array('success' => 'true', 'data' => array());
     }
