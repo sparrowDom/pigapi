@@ -66,7 +66,9 @@ class WeeklychallengeController extends Controller
         $qb = $qb->orderBy('wc.id', 'ASC');
 
         $result = $qb->getQuery()->getResult();
-        return array('success' => 'true', 'data' => $result);
+        return array('success' => 'true', 
+                     'serverTime' => new \DateTime(),
+                     'data' => $result);
     }
 
     /**
@@ -83,7 +85,9 @@ class WeeklychallengeController extends Controller
         $wc = $repository->findOneById($id);
 
         if($wc != null)
-            return array('success' => 'true', 'data' => $wc);
+            return array('success' => 'true', 
+                         'serverTime' => new \DateTime(),
+                         'data' => $wc);
         else
             return array('success' => 'false');
     }
