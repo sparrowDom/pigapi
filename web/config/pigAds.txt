@@ -1,0 +1,8 @@
+showEveryGames=4
+showEveryTime=500
+interstitialFreq=1
+moreAppsFreq=0
+cbInterstitialFreq=0.50
+xplodeInterstitialFreq=0.50
+xplodeMoreAppsFreq=0.50
+cbMoreAppsFreq=0.50
