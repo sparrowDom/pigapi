@@ -75,7 +75,7 @@ class Player extends BaseAuditableEntity
     /**
      * @var string $applePushToken
      *
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"always"})
      */
     protected $applePushToken;
