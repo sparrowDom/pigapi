@@ -31,17 +31,18 @@ class MessageTestCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
     	$msg = $input->getArgument('msg');
-        $logMsg = "Sending out message to domen player '$msg'.";
-        $this->getContainer()->get('logger')->info($logMsg , get_defined_vars());
 
         $repository = $this->getContainer()->get("doctrine")
             ->getRepository('MimazooSoaBundle:Player');
 
         $player = $repository->findOneByName("Domen Grabec");
 
+        $logMsg = "Sending out message to player " . $player->getName() . " '$msg'.";
+        $this->getContainer()->get('logger')->info($logMsg , get_defined_vars());
+
         $shared = $this->getContainer()->get("mimazoo_soa.shared");
         $notification = $shared->queuePushNotification($player, $msg);
         $shared->sendOneNotification($notification);
-        echo "Sending message to Domen: " . $logMsg . PHP_EOL;
+        echo $logMsg . PHP_EOL;
     }
 }
