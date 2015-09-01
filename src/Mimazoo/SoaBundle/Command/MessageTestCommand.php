@@ -42,7 +42,12 @@ class MessageTestCommand extends ContainerAwareCommand
 
         $shared = $this->getContainer()->get("mimazoo_soa.shared");
         $notification = $shared->queuePushNotification($player, $msg);
+        $notification->setSentOn(new \DateTime("now"));
+
+        $em = $this->getContainer()->get('doctrine')->getManager();
         $shared->sendOneNotification($notification);
+
+        $em->persist($notification);
         echo $logMsg . PHP_EOL;
     }
 }
