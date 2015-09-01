@@ -64,6 +64,9 @@ class SharedService
     }
 
     public function sendOneNotification($notification) {
+        if ($notification->getPlayer() == null)
+            return; 
+        
         if(strlen($notification->getPlayer()->getApplePushToken()) > 5){
             //limit is 100 characters
             $message = new iOSMessage();
