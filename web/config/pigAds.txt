@@ -1,4 +1,4 @@
-showEveryGames=3
+showEveryGames=4
 showEveryTime=500
 interstitialFreq=1
 moreAppsFreq=0
