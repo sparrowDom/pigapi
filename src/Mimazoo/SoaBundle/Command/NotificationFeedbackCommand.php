@@ -33,7 +33,7 @@ class NotificationFeedbackCommand extends ContainerAwareCommand
         $feedbackService = $this->getContainer()->get("rms_push_notifications.ios.feedback");
         $uuids = $feedbackService->getDeviceUUIDs();
 
-        echo "Problematic messages: " . count($uuids);
+        echo "Problematic messages: " . count($uuids) . PHP_EOL;
         foreach ($uuids as $uuid) {
             print_r($uuid);
         }
